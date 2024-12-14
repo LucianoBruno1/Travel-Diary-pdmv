@@ -15,7 +15,7 @@ import com.ifpe.traveldiarypdmv.ui.theme.TravelDiaryPDMVTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        super.onCreate(savedInstanceState)  
         enableEdgeToEdge()
         setContent {
             TravelDiaryPDMVTheme {
