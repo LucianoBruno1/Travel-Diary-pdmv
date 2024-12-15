@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ifpe.traveldiarypdmv.R
 import com.ifpe.traveldiarypdmv.ui.component.button.TravelDiaryButton
-import com.ifpe.traveldiarypdmv.ui.component.text_input.TravelDiaryTextInput
+import com.ifpe.traveldiarypdmv.ui.component.text_input.TravelDiaryTextField
 import com.ifpe.traveldiarypdmv.ui.theme.Gray100
 import com.ifpe.traveldiarypdmv.ui.theme.GreenBase
 import com.ifpe.traveldiarypdmv.ui.theme.Typography
@@ -68,7 +68,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                     .align(Alignment.Start)
             )
 
-            TravelDiaryTextInput(
+            TravelDiaryTextField(
                 value = email.value,
                 onValueChange = { email.value = it },
                 labelText = "Digite seu email",
@@ -76,7 +76,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                 leadingIconDescription = "Ícone de Email"
             )
 
-            TravelDiaryTextInput(
+            TravelDiaryTextField(
                 value = password.value,
                 onValueChange = { password.value = it },
                 labelText = "Digite sua senha",

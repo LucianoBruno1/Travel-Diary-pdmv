@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.ifpe.traveldiarypdmv.ui.theme.Typography
 
 @Composable
-fun TravelDiaryTextInput(value: String,
+fun TravelDiaryTextField(value: String,
                          onValueChange: (String) -> Unit,
                          labelText: String,
                          leadingIconPainter: Painter,
