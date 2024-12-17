@@ -26,16 +26,16 @@ class LoginViewModel : ViewModel() {
             val result = TravelDiaryRemoteDataSource.login(LoginRequest(email, password))
             println("Resultado da requisição: $result") // Log de depuração
 
-            _uiState.value = if (result.isSuccess) {
-                val response = result.getOrNull()
+            val response = result.getOrNull()
 
-                if (response?.user != null && response.token != null)
-                    println("Login bem-sucedido")
-                    uiState.value.copy(
-                        isLoading = false,
-                        isLoggedIn = true,
-                        token = response?.token
-                    )
+            _uiState.value = if (result.isSuccess && response?.token != null) {
+
+                println("Login bem-sucedido")
+                uiState.value.copy(
+                    isLoading = false,
+                    isLoggedIn = true,
+                    token = response.token
+                )
             } else {
                 val errorMessage = result.exceptionOrNull()?.message
                     ?: result.getOrNull()?.message // Pega a mensagem da API, se existir
@@ -50,7 +50,7 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-    private fun resetError(){
+    private fun resetError() {
         _uiState.value = uiState.value.copy(errorMessage = null)
     }
 }
