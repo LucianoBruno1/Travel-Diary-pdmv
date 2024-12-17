@@ -1,12 +1,24 @@
-package com.ifpe.traveldiarypdmv.ui.screen.login
+package com.ifpe.traveldiarypdmv.ui.screen.register
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -15,6 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.ifpe.traveldiarypdmv.R
 import com.ifpe.traveldiarypdmv.ui.component.button.TravelDiaryButton
 import com.ifpe.traveldiarypdmv.ui.component.text_input.TravelDiaryTextField
@@ -23,14 +36,12 @@ import com.ifpe.traveldiarypdmv.ui.theme.GreenBase
 import com.ifpe.traveldiarypdmv.ui.theme.Typography
 
 @Composable
-fun LoginScreen(
+fun RegisterScreen(
     modifier: Modifier = Modifier,
-    viewModel: LoginViewModel,
-    onNavigateToHome: () -> Unit,
-    onNavigateToRegister: () -> Unit
+    navController: NavController
 ) {
-    val uiState by viewModel.uiState.collectAsState()
 
+    var nome by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -41,7 +52,7 @@ fun LoginScreen(
     ) {
         // Imagem no topo
         Image(
-            painter = painterResource(id = R.drawable.map_with_bags),
+            painter = painterResource(id = R.drawable.img_register_map),
             contentDescription = "Mapa ou imagem do topo",
             modifier = Modifier
                 .fillMaxWidth()
@@ -59,11 +70,19 @@ fun LoginScreen(
             verticalArrangement = Arrangement.Top
         ) {
             Text(
-                text = "ENTRAR",
+                text = "CADASTRE-SE",
                 style = Typography.headlineLarge.copy(fontSize = 26.sp),
                 modifier = Modifier
                     .padding(bottom = 25.dp)
                     .align(Alignment.Start)
+            )
+
+            TravelDiaryTextField(
+                value = nome,
+                onValueChange = { nome = it },
+                labelText = "Digite seu nome completo",
+                leadingIconPainter = painterResource(id = R.drawable.ic_person),
+                leadingIconDescription = "Ícone de nome"
             )
 
             TravelDiaryTextField(
@@ -82,38 +101,30 @@ fun LoginScreen(
                 leadingIconDescription = "Ícone de Senha"
             )
 
-            Text(
-                text = "Esqueceu a senha?",
-                style = Typography.bodyMedium,
-                modifier = Modifier
-                    .align(Alignment.End)
-                    .padding(16.dp)
-            )
-
             TravelDiaryButton(
                 modifier = Modifier.fillMaxWidth(),
-                text = "Acessar",
+                text = "Cadastrar",
                 containerColor = GreenBase,
                 contentColor = Color.White,
                 onClick = {
-                    viewModel.onEvent(LoginUiEvent.OnLoginClicked(email, password))
+                    //viewModel.onEvent(LoginUiEvent.OnLoginClicked(email, password))
                 },
-                enabled = !uiState.isLoading
+                //enabled = !uiState.isLoading
             )
 
-            if (uiState.isLoading) {
-                Spacer(modifier = Modifier.height(16.dp))
-                CircularProgressIndicator()
-            }
+//            if (uiState.isLoading) {
+//                Spacer(modifier = Modifier.height(16.dp))
+//                CircularProgressIndicator()
+//            }
 
-            uiState.errorMessage?.let { error ->
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(text = "Erro: $error", color = Color.Red)
-            }
+//            uiState.errorMessage?.let { error ->
+//                Spacer(modifier = Modifier.height(16.dp))
+//                Text(text = "Erro: $error", color = Color.Red)
+//            }
 
-            if (uiState.isLoggedIn) {
-                onNavigateToHome()
-            }
+//            if (uiState.isLoggedIn) {
+//                onNavigateToHome()
+//            }
 
             Spacer(modifier = Modifier.height(25.dp))
             Text(text = "ou", style = Typography.bodySmall)
@@ -132,18 +143,19 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(20.dp))
             Row {
                 Text(
-                    text = "Ainda não possui uma conta?",
+                    text = "Já possui uma conta?",
                     style = Typography.bodyMedium
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     modifier = Modifier.clickable {
-                        onNavigateToRegister()
+                        navController.popBackStack()
                     },
-                    text = "Cadastre-se",
+                    text = "Faça o login",
                     style = Typography.bodyMedium.copy(
                         textDecoration = TextDecoration.Underline,
                     )
+
                 )
             }
         }
