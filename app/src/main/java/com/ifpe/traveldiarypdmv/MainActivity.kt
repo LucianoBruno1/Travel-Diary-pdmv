@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.ifpe.traveldiarypdmv.ui.screen.login.LoginScreen
+import com.ifpe.traveldiarypdmv.ui.screen.recoverpassword.RecoverPasswordScreen
 import com.ifpe.traveldiarypdmv.ui.theme.TravelDiaryPDMVTheme
 
 class MainActivity : ComponentActivity() {
@@ -21,6 +22,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             TravelDiaryPDMVTheme {
                 LoginScreen()
+                RecoverPasswordScreen()
             }
         }
     }
