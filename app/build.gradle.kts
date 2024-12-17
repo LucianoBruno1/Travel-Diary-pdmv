@@ -44,8 +44,14 @@ dependencies {
     implementation(libs.maps.compose)
     implementation(libs.coil.compose)
     implementation(libs.navigation.compose)
+    implementation(libs.coil.network.okhttp)
     implementation(libs.kotlin.serialization)
 
+    implementation(platform(libs.ktor.bom))
+    implementation(libs.bundles.ktor.client)
+
+    implementation(libs.zxing)
+    implementation(libs.zxing.android.embedded)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

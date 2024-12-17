@@ -2,20 +2,10 @@ package com.ifpe.traveldiarypdmv.ui.screen.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,14 +22,20 @@ import com.ifpe.traveldiarypdmv.ui.theme.GreenBase
 import com.ifpe.traveldiarypdmv.ui.theme.Typography
 
 @Composable
-fun LoginScreen(modifier: Modifier = Modifier) {
-    val email = remember { mutableStateOf("") }
-    val password = remember { mutableStateOf("") }
+fun LoginScreen(
+    modifier: Modifier = Modifier,
+    viewModel: LoginViewModel,
+    onNavigateToHome: () -> Unit
+) {
+    val uiState by viewModel.uiState.collectAsState()
+
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
 
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.White), // Define o fundo branco para o conteúdo
+            .background(Color.White),
     ) {
         // Imagem no topo
         Image(
@@ -49,10 +45,10 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                 .fillMaxWidth()
                 .heightIn(max = 300.dp)
                 .padding(bottom = 25.dp),
-            contentScale = ContentScale.Crop // Corta para se ajustar sem distorcer
+            contentScale = ContentScale.Crop
         )
 
-        // Espaço para o conteúdo abaixo da imagem
+        // Conteúdo principal
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -69,16 +65,16 @@ fun LoginScreen(modifier: Modifier = Modifier) {
             )
 
             TravelDiaryTextField(
-                value = email.value,
-                onValueChange = { email.value = it },
+                value = email,
+                onValueChange = { email = it },
                 labelText = "Digite seu email",
                 leadingIconPainter = painterResource(id = R.drawable.ic_email),
                 leadingIconDescription = "Ícone de Email"
             )
 
             TravelDiaryTextField(
-                value = password.value,
-                onValueChange = { password.value = it },
+                value = password,
+                onValueChange = { password = it },
                 labelText = "Digite sua senha",
                 leadingIconPainter = painterResource(id = R.drawable.ic_lock),
                 leadingIconDescription = "Ícone de Senha"
@@ -89,7 +85,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                 style = Typography.bodyMedium,
                 modifier = Modifier
                     .align(Alignment.End)
-                    .padding(16.dp),
+                    .padding(16.dp)
             )
 
             TravelDiaryButton(
@@ -97,8 +93,25 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                 text = "Acessar",
                 containerColor = GreenBase,
                 contentColor = Color.White,
-                onClick = {}
+                onClick = {
+                    viewModel.onEvent(LoginUiEvent.OnLoginClicked(email, password))
+                },
+                enabled = !uiState.isLoading
             )
+
+            if (uiState.isLoading) {
+                Spacer(modifier = Modifier.height(16.dp))
+                CircularProgressIndicator()
+            }
+
+            uiState.errorMessage?.let { error ->
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(text = "Erro: $error", color = Color.Red)
+            }
+
+            if (uiState.isLoggedIn) {
+                onNavigateToHome()
+            }
 
             Spacer(modifier = Modifier.height(25.dp))
             Text(text = "ou", style = Typography.bodySmall)

@@ -31,7 +31,8 @@ fun TravelDiaryButton(
     @DrawableRes iconRes: Int? = null,
     onClick: () -> Unit,
     containerColor: Color = GreenBase, // Adiciona um parâmetro para a cor do botão
-    contentColor: Color = Color.White // Adiciona um parâmetro para a cor do conteúdo (texto/ícone)
+    contentColor: Color = Color.White, // Adiciona um parâmetro para a cor do conteúdo (texto/ícone)
+    enabled: Boolean = true // Parâmetro que controla se o botão está habilitado
 ) {
     Button(
         modifier = modifier.heightIn(min = 46.dp),
@@ -41,7 +42,8 @@ fun TravelDiaryButton(
             containerColor = containerColor,
             contentColor = contentColor
         ),
-        onClick = onClick
+        onClick = onClick,
+        enabled = enabled // Controle de habilitação do botão
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
