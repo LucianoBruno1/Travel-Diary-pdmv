@@ -18,11 +18,13 @@ import com.ifpe.traveldiarypdmv.ui.screen.home.HomeScreen
 import com.ifpe.traveldiarypdmv.ui.screen.login.LoginScreen
 import com.ifpe.traveldiarypdmv.ui.screen.login.LoginViewModel
 import com.ifpe.traveldiarypdmv.ui.screen.register.RegisterScreen
+import com.ifpe.traveldiarypdmv.ui.screen.register.RegisterViewModel
 import com.ifpe.traveldiarypdmv.ui.screen.splash.SplashScreen
 import com.ifpe.traveldiarypdmv.ui.theme.TravelDiaryPDMVTheme
 
 class MainActivity : ComponentActivity() {
-    private val viewModel: LoginViewModel by viewModels()
+    private val viewModelLogin: LoginViewModel by viewModels()
+    private val viewModelRegister: RegisterViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +50,7 @@ class MainActivity : ComponentActivity() {
                     // Login Screen
                     composable<Login> {
                         LoginScreen(
-                            viewModel = viewModel,
+                            viewModel = viewModelLogin,
                             onNavigateToHome = {
                                 navController.navigate(Home)
                             },
@@ -61,6 +63,7 @@ class MainActivity : ComponentActivity() {
                     // Register Screen
                     composable<Register> {
                         RegisterScreen(
+                            viewModel = viewModelRegister,
                             navController = navController
                         )
                     }

@@ -3,6 +3,8 @@ package com.ifpe.traveldiarypdmv.core.network
 import com.ifpe.traveldiarypdmv.data.model.LoginRequest
 import com.ifpe.traveldiarypdmv.data.model.LoginResponse
 import com.ifpe.traveldiarypdmv.core.network.KtorHttpClient.httpClientAndroid
+import com.ifpe.traveldiarypdmv.data.model.RegisterRequest
+import com.ifpe.traveldiarypdmv.data.model.RegisterResponse
 import io.ktor.client.call.body
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -21,6 +23,17 @@ object TravelDiaryRemoteDataSource {
             contentType(io.ktor.http.ContentType.Application.Json)
             setBody(request) // Envia o corpo com os dados de login
         }.body<LoginResponse>()
+
+        Result.success(response)
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+
+    suspend fun register(request: RegisterRequest): Result<RegisterResponse> = try {
+        val response = httpClientAndroid.post("$BASE_URL/user/register") {
+            contentType(io.ktor.http.ContentType.Application.Json)
+            setBody(request) // Envia o corpo com os dados de login
+        }.body<RegisterResponse>()
 
         Result.success(response)
     } catch (e: Exception) {
