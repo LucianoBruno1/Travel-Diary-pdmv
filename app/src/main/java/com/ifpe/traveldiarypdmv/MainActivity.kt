@@ -14,7 +14,6 @@ import com.ifpe.traveldiarypdmv.ui.route.Home
 import com.ifpe.traveldiarypdmv.ui.route.Login
 import com.ifpe.traveldiarypdmv.ui.route.Register
 import com.ifpe.traveldiarypdmv.ui.route.Splash
-import com.ifpe.traveldiarypdmv.ui.route.recoverpassword
 import com.ifpe.traveldiarypdmv.ui.screen.home.HomeScreen
 import com.ifpe.traveldiarypdmv.ui.screen.login.LoginScreen
 import com.ifpe.traveldiarypdmv.ui.screen.login.LoginViewModel
