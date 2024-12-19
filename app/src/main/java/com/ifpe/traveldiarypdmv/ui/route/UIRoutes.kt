@@ -13,3 +13,4 @@ data object Home
 
 @Serializable
 data object Register
+

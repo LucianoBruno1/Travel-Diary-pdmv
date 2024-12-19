@@ -14,9 +14,11 @@ import com.ifpe.traveldiarypdmv.ui.route.Home
 import com.ifpe.traveldiarypdmv.ui.route.Login
 import com.ifpe.traveldiarypdmv.ui.route.Register
 import com.ifpe.traveldiarypdmv.ui.route.Splash
+import com.ifpe.traveldiarypdmv.ui.route.recoverpassword
 import com.ifpe.traveldiarypdmv.ui.screen.home.HomeScreen
 import com.ifpe.traveldiarypdmv.ui.screen.login.LoginScreen
 import com.ifpe.traveldiarypdmv.ui.screen.login.LoginViewModel
+import com.ifpe.traveldiarypdmv.ui.screen.recoverpassword.RecoverPasswordScreen
 import com.ifpe.traveldiarypdmv.ui.screen.register.RegisterScreen
 import com.ifpe.traveldiarypdmv.ui.screen.splash.SplashScreen
 import com.ifpe.traveldiarypdmv.ui.theme.TravelDiaryPDMVTheme
@@ -34,7 +36,7 @@ class MainActivity : ComponentActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = Splash
+                    startDestination = Login
                 ) {
                     // Splash Screen
                     composable<Splash> {
@@ -44,6 +46,7 @@ class MainActivity : ComponentActivity() {
                             }
                         )
                     }
+
 
                     // Login Screen
                     composable<Login> {
