@@ -5,17 +5,25 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.ifpe.traveldiarypdmv.ui.component.bottom_nav.BottomNavHost
+import com.ifpe.traveldiarypdmv.ui.component.bottom_navigation.BottomNavItem
+import com.ifpe.traveldiarypdmv.ui.component.bottom_navigation.BottomNavigationBar
 import com.ifpe.traveldiarypdmv.ui.route.Home
 import com.ifpe.traveldiarypdmv.ui.route.Login
 import com.ifpe.traveldiarypdmv.ui.route.Register
 import com.ifpe.traveldiarypdmv.ui.route.Splash
 import com.ifpe.traveldiarypdmv.ui.screen.home.HomeScreen
 import com.ifpe.traveldiarypdmv.ui.screen.login.LoginScreen
+import com.ifpe.traveldiarypdmv.ui.screen.login.LoginUiEvent
 import com.ifpe.traveldiarypdmv.ui.screen.login.LoginViewModel
 import com.ifpe.traveldiarypdmv.ui.screen.register.RegisterScreen
 import com.ifpe.traveldiarypdmv.ui.screen.register.RegisterViewModel
@@ -33,59 +41,72 @@ class MainActivity : ComponentActivity() {
             TravelDiaryPDMVTheme {
                 val navController = rememberNavController()
 
+                // Observar o estado de autenticação
+                val uiState by viewModelLogin.uiState.collectAsStateWithLifecycle()
+                val isLoggedIn = uiState.isLoggedIn
 
-                NavHost(
-                    navController = navController,
-                    startDestination = Splash
-                ) {
-                    // Splash Screen
-                    composable<Splash> {
-                        SplashScreen(
-                            onNavigateToLogin = {
-                                navController.navigate(Login)
-                            }
-                        )
+
+                Scaffold(
+                    bottomBar = {
+                        val currentRoute = navController
+                            .currentBackStackEntryAsState()
+                            .value?.destination?.route
+                        if (isLoggedIn && currentRoute in listOf(
+                                BottomNavItem.Home.route,
+                                BottomNavItem.Profile.route,
+                                BottomNavItem.Settings.route
+                            )
+                        ) {
+                            BottomNavigationBar(navController = navController)
+                        }
                     }
-
-                    // Login Screen
-                    composable<Login> {
-                        LoginScreen(
-                            viewModel = viewModelLogin,
-                            onNavigateToHome = {
-                                navController.navigate(Home)
-                            },
-                            onNavigateToRegister = {
-                                navController.navigate(Register)
-                            }
-                        )
-                    }
-
-                    // Register Screen
-                    composable<Register> {
-                        RegisterScreen(
-                            viewModel = viewModelRegister,
-                            navController = navController
-                        )
-                    }
-
-                    // Tela Home
-                    composable<Home> {
-                        HomeScreen(
-                            onLogout = {
-                                navController.navigate(Login) {
-                                    popUpTo(Splash) {
-                                        inclusive = true
-                                    } // Redefine o back stack para ir de volta à Splash
+                ) { padding -> // Corrige o uso do padding
+                    NavHost(
+                        navController = navController,
+                        startDestination = if (isLoggedIn) BottomNavItem.Home.route else Splash.route,
+                        modifier = Modifier.padding(padding) // Aplica o padding aqui
+                    ) {
+                        // Rotas de autenticação
+                        composable(Splash.route) {
+                            SplashScreen(onNavigateToLogin = {
+                                navController.navigate(Login.route) {
+                                    popUpTo(Splash.route) { inclusive = true }
                                 }
-                            }
-                        )
+                            })
+                        }
+
+                        // Login Screen
+                        composable(Login.route) {
+                            LoginScreen(
+                                viewModel = viewModelLogin,
+                                onNavigateToHome = {
+                                    navController.navigate(BottomNavItem.Home.route)
+                                },
+                                onNavigateToRegister = { navController.navigate(Register.route) }
+                            )
+                        }
+
+                        // Register Screen
+                        composable(Register.route)  {
+                            RegisterScreen(
+                                viewModel = viewModelRegister,
+                                navController = navController
+                            )
+                        }
+
+                        composable(Home.route) {
+                            HomeScreen(onLogout = {
+                                viewModelLogin.onEvent(LoginUiEvent.OnResetError) // Atualizar o estado ao sair
+                                navController.navigate(Splash.route) {
+                                    popUpTo(0) // Limpa a pilha
+                                }
+                            })
+                        }
+                        composable(BottomNavItem.Profile.route) { /* ProfileScreen() */ }
+                        composable(BottomNavItem.Settings.route) { /* SettingsScreen() */ }
                     }
-
-
                 }
             }
         }
     }
 }
-
-
