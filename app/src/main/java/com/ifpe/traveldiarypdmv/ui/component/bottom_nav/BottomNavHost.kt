@@ -25,7 +25,7 @@ fun BottomNavHost(navController: NavHostController) {
         composable(BottomNavItem.Profile.route) {
             //ProfileScreen() // Tela de perfil
         }
-        composable(BottomNavItem.Settings.route) {
+        composable(BottomNavItem.Favorite.route) {
             //SettingsScreen() // Tela de configurações
         }
     }

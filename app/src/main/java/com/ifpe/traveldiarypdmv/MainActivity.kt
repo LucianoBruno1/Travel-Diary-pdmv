@@ -53,8 +53,10 @@ class MainActivity : ComponentActivity() {
                             .value?.destination?.route
                         if (isLoggedIn && currentRoute in listOf(
                                 BottomNavItem.Home.route,
+                                BottomNavItem.Map.route,
+                                BottomNavItem.Favorite.route,
                                 BottomNavItem.Profile.route,
-                                BottomNavItem.Settings.route
+
                             )
                         ) {
                             BottomNavigationBar(navController = navController)
@@ -103,7 +105,8 @@ class MainActivity : ComponentActivity() {
                             })
                         }
                         composable(BottomNavItem.Profile.route) { /* ProfileScreen() */ }
-                        composable(BottomNavItem.Settings.route) { /* SettingsScreen() */ }
+                        composable(BottomNavItem.Map.route) { /* ProfileScreen() */ }
+                        composable(BottomNavItem.Favorite.route) { /* SettingsScreen() */ }
                     }
                 }
             }
