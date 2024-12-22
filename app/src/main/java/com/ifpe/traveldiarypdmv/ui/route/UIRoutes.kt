@@ -21,3 +21,8 @@ data object Home {
 data object Register {
     const val route = "register"
 }
+
+@Serializable
+data object Profile {
+    const val profile = "profile"
+}
