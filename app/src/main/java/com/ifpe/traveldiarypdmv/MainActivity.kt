@@ -14,13 +14,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.ifpe.traveldiarypdmv.ui.component.bottom_nav.BottomNavHost
 import com.ifpe.traveldiarypdmv.ui.component.bottom_navigation.BottomNavItem
 import com.ifpe.traveldiarypdmv.ui.component.bottom_navigation.BottomNavigationBar
+import com.ifpe.traveldiarypdmv.ui.route.Details
 import com.ifpe.traveldiarypdmv.ui.route.Home
 import com.ifpe.traveldiarypdmv.ui.route.Login
 import com.ifpe.traveldiarypdmv.ui.route.Register
 import com.ifpe.traveldiarypdmv.ui.route.Splash
+import com.ifpe.traveldiarypdmv.ui.screen.details.DetailsScreen
 import com.ifpe.traveldiarypdmv.ui.screen.home.HomeScreen
 import com.ifpe.traveldiarypdmv.ui.screen.login.LoginScreen
 import com.ifpe.traveldiarypdmv.ui.screen.login.LoginUiEvent
@@ -63,7 +64,7 @@ class MainActivity : ComponentActivity() {
                             BottomNavigationBar(navController = navController)
                         }
                     }
-                ) { padding -> // Corrige o uso do padding
+                ) { padding -> // padding
                     NavHost(
                         navController = navController,
                         startDestination = if (isLoggedIn) BottomNavItem.Home.route else Splash.route,
@@ -99,15 +100,24 @@ class MainActivity : ComponentActivity() {
 
                         composable(Home.route) {
                             HomeScreen(onLogout = {
-                                viewModelLogin.onEvent(LoginUiEvent.OnResetError) // Atualizar o estado ao sair
+                                viewModelLogin.onEvent(LoginUiEvent.OnResetError)
                                 navController.navigate(Splash.route) {
                                     popUpTo(0) // Limpa a pilha
                                 }
-                            })
+                            },
+                                onNavigateToDetails = {
+                                    navController.navigate(Details.route) // Navegar para a rota de detalhes
+                                })
                         }
+
+                        composable(Details.route) {
+                            DetailsScreen(navController = navController)
+                        }
+
                         composable(BottomNavItem.Profile.route) { ProfileScreen() }
                         composable(BottomNavItem.Map.route) { /* ProfileScreen() */ }
                         composable(BottomNavItem.Favorite.route) { /* SettingsScreen() */ }
+
                     }
                 }
             }

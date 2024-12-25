@@ -45,52 +45,45 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .fillMaxWidth()
                 .shadow(8.dp, shape = RoundedCornerShape(16.dp), ambientColor = Color.Black.copy(alpha = 0.3f)) // Sombra
-                .background(Color.White) // Fundo branco
-                .padding(20.dp) // Adiciona padding dentro da Box
+                .background(Color.White)
+                .padding(20.dp)
         ) {
-            // Cabeçalho do Perfil
+
             ProfileHeader()
 
         }
 
-        // Posicionando o IconButton no canto superior direito
+
         IconButton(
             modifier = Modifier
-                .align(Alignment.TopEnd) // Alinha o botão no canto superior direito
-                .padding(16.dp), // Adiciona um pouco de padding ao redor para não ficar tão colado na borda
+                .align(Alignment.TopEnd)
+                .padding(16.dp),
             onClick = {
-                // Ação quando o ícone de configuração for clicado
                 Log.d("IconButton", "Botão de configurações clicado!")
             },
         ) {
             Icon(
-                imageVector = Icons.Default.Settings, // Ícone de configuração
-                contentDescription = "Ícone de configuração do APP" // Descrição acessível
+                imageVector = Icons.Default.Settings,
+                contentDescription = "Ícone de configuração do APP"
             )
         }
 
-        // Usando Column para empilhar os elementos abaixo do ProfileHeader
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 150.dp) // Ajuste o top padding para dar espaçamento suficiente para o conteúdo
+                .padding(top = 150.dp)
         ) {
-            // Adiciona mais conteúdo abaixo do cabeçalho (ProfileHeader)
-            // Aqui você pode adicionar os outros componentes, como a linha horizontal
-
-            // Exemplo de um botão ou outro conteúdo
             Spacer(modifier = Modifier.height(50.dp))
 
-            // Linha horizontal
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(2.dp)  // Define a espessura da linha
-                    .background(Color.Black)  // Define a cor da linha
+                    .height(2.dp)
+                    .background(Color.Black)
             )
 
             Spacer(modifier = Modifier.height(50.dp))
-            // Biografia - Usando o componente TextField padrão
+
             var biography by remember { mutableStateOf("Conte-nos sobre você...") }
 
             OutlinedTextField(
@@ -100,9 +93,9 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
                 placeholder = { Text("Escreva sua biografia aqui...") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(min = 150.dp)  // Define um tamanho mínimo para o campo
+                    .heightIn(min = 150.dp)
                     .padding(top = 16.dp),
-                maxLines = 10,  // Permite que o campo tenha até 5 linhas
+                maxLines = 10,
                 singleLine = false,  // Permite múltiplas linhas
             )
             Spacer(modifier = Modifier.height(20.dp))

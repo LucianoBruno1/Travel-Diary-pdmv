@@ -24,5 +24,10 @@ data object Register {
 
 @Serializable
 data object Profile {
-    const val profile = "profile"
+    const val route = "profile"
+}
+
+@Serializable
+data object Details {
+    const val route = "details"
 }
