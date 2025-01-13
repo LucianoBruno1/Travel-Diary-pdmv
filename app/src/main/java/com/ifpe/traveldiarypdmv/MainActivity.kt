@@ -26,6 +26,7 @@ import com.ifpe.traveldiarypdmv.ui.screen.home.HomeScreen
 import com.ifpe.traveldiarypdmv.ui.screen.login.LoginScreen
 import com.ifpe.traveldiarypdmv.ui.screen.login.LoginUiEvent
 import com.ifpe.traveldiarypdmv.ui.screen.login.LoginViewModel
+import com.ifpe.traveldiarypdmv.ui.screen.map.MapScreen
 import com.ifpe.traveldiarypdmv.ui.screen.profile.ProfileScreen
 import com.ifpe.traveldiarypdmv.ui.screen.register.RegisterScreen
 import com.ifpe.traveldiarypdmv.ui.screen.register.RegisterViewModel
@@ -115,7 +116,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(BottomNavItem.Profile.route) { ProfileScreen() }
-                        composable(BottomNavItem.Map.route) { /* ProfileScreen() */ }
+                        composable(BottomNavItem.Map.route) {  MapScreen() }
                         composable(BottomNavItem.Favorite.route) { /* SettingsScreen() */ }
 
                     }
