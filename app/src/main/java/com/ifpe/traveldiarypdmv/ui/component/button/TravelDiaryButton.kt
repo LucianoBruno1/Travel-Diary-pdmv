@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.ifpe.traveldiarypdmv.ui.theme.GreenBase
 import com.ifpe.traveldiarypdmv.ui.theme.Typography
 import com.ifpe.traveldiarypdmv.R
@@ -30,9 +31,10 @@ fun TravelDiaryButton(
     text: String? = null,
     @DrawableRes iconRes: Int? = null,
     onClick: () -> Unit,
-    containerColor: Color = GreenBase, // Adiciona um parâmetro para a cor do botão
-    contentColor: Color = Color.White, // Adiciona um parâmetro para a cor do conteúdo (texto/ícone)
-    enabled: Boolean = true // Parâmetro que controla se o botão está habilitado
+    containerColor: Color = GreenBase, // Cor do botão
+    contentColor: Color = Color.White, // Cor do conteúdo (texto/ícone)
+    enabled: Boolean = true, // Controle se o botão está habilitado
+    fontSize: Float? = null // Novo parâmetro para o tamanho da fonte
 ) {
     Button(
         modifier = modifier.heightIn(min = 46.dp),
@@ -49,10 +51,17 @@ fun TravelDiaryButton(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            // Se existir um ícone, exibe o ícone
             iconRes?.let {
                 Icon(painter = painterResource(id = iconRes), contentDescription = "Ícone do Botão")
             }
-            text?.let { Text(text = text.replaceFirstChar { it.uppercase() }, style = Typography.labelLarge) }
+            // Exibe o texto, aplicando o fontSize se fornecido
+            text?.let {
+                Text(
+                    text = text.replaceFirstChar { it.uppercase() },
+                    style = Typography.labelLarge.copy(fontSize = fontSize?.sp ?: Typography.labelLarge.fontSize)
+                )
+            }
         }
     }
 }
@@ -65,7 +74,7 @@ private fun TravelDiaryButtonPreview() {
         text = "Acessar",
         containerColor = GreenBase,
         contentColor = Color.White,
-        onClick = {}
+        onClick = {},
     )
 }
 
@@ -78,6 +87,6 @@ private fun TravelDiaryButtonGooglePreview() {
         iconRes = R.drawable.ic_google,
         containerColor = Gray100,
         contentColor = Color.Black,
-        onClick = {}
+        onClick = {},
     )
 }

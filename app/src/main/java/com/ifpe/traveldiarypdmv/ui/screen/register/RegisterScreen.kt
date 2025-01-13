@@ -13,8 +13,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,10 +40,12 @@ import com.ifpe.traveldiarypdmv.ui.theme.Typography
 @Composable
 fun RegisterScreen(
     modifier: Modifier = Modifier,
-    navController: NavController
+    navController: NavController,
+    viewModel: RegisterViewModel
 ) {
+    val uiState by viewModel.uiState.collectAsState()
 
-    var nome by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -78,8 +82,8 @@ fun RegisterScreen(
             )
 
             TravelDiaryTextField(
-                value = nome,
-                onValueChange = { nome = it },
+                value = name,
+                onValueChange = { name = it },
                 labelText = "Digite seu nome completo",
                 leadingIconPainter = painterResource(id = R.drawable.ic_person),
                 leadingIconDescription = "Ícone de nome"
@@ -107,24 +111,46 @@ fun RegisterScreen(
                 containerColor = GreenBase,
                 contentColor = Color.White,
                 onClick = {
-                    //viewModel.onEvent(LoginUiEvent.OnLoginClicked(email, password))
+                    viewModel.onEvent(RegisterUiEvent.OnRegisterClicked(name, email, password))
                 },
-                //enabled = !uiState.isLoading
+                enabled = !uiState.isLoading
             )
 
-//            if (uiState.isLoading) {
-//                Spacer(modifier = Modifier.height(16.dp))
-//                CircularProgressIndicator()
-//            }
+            if (uiState.isLoading) {
+                Spacer(modifier = Modifier.height(16.dp))
+                CircularProgressIndicator()
+            }
 
-//            uiState.errorMessage?.let { error ->
-//                Spacer(modifier = Modifier.height(16.dp))
-//                Text(text = "Erro: $error", color = Color.Red)
-//            }
+            uiState.errorMessage?.let { error ->
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(text = "Erro: $error", color = Color.Red)
+            }
 
-//            if (uiState.isLoggedIn) {
-//                onNavigateToHome()
-//            }
+            if (uiState.isRegistered) {
+                viewModel.onEvent(RegisterUiEvent.OnResetError)
+
+                name = ""
+                email = ""
+                password = ""
+
+
+                Spacer(modifier = Modifier.height(16.dp))
+                Row {
+                    Text(text = "Cadastro realizado com sucesso!", color = GreenBase)
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        modifier = Modifier.clickable {
+                            navController.popBackStack()
+                            viewModel.resetAfterSuccess()
+                        },
+                        text = "Faça o login",
+                        color = GreenBase,
+                        style = Typography.bodyMedium.copy(
+                            textDecoration = TextDecoration.Underline,
+                        )
+                    )
+                }
+            }
 
             Spacer(modifier = Modifier.height(25.dp))
             Text(text = "ou", style = Typography.bodySmall)
@@ -150,6 +176,7 @@ fun RegisterScreen(
                 Text(
                     modifier = Modifier.clickable {
                         navController.popBackStack()
+                        viewModel.resetAfterSuccess()
                     },
                     text = "Faça o login",
                     style = Typography.bodyMedium.copy(

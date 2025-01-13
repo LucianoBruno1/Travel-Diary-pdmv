@@ -3,13 +3,31 @@ package com.ifpe.traveldiarypdmv.ui.route
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object Splash
+data object Splash {
+    const val route = "splash"
+}
 
 @Serializable
-data object Login
+data object Login {
+    const val route = "login"
+}
 
 @Serializable
-data object Home
+data object Home {
+    const val route = "home"
+}
 
 @Serializable
-data object Register
+data object Register {
+    const val route = "register"
+}
+
+@Serializable
+data object Profile {
+    const val route = "profile"
+}
+
+@Serializable
+data object Details {
+    const val route = "details"
+}

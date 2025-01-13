@@ -20,7 +20,8 @@ import com.ifpe.traveldiarypdmv.ui.theme.Typography
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    onLogout: () -> Unit // Função para simular o logout
+    onLogout: () -> Unit, // Função para simular o logout
+    onNavigateToDetails: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -45,6 +46,13 @@ fun HomeScreen(
 
         Button(onClick = { onLogout() }) {
             Text(text = "Logout", fontSize = 16.sp)
+        }
+
+        Button(
+            onClick = { onNavigateToDetails() },
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text("Ir para Detalhes")
         }
     }
 }
