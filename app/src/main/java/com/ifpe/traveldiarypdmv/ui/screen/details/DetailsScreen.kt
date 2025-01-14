@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,10 +22,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -38,6 +44,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.ifpe.traveldiarypdmv.R
+import com.ifpe.traveldiarypdmv.ui.component.dropdown_menu.TravelDiaryDropdownMenu
 import com.ifpe.traveldiarypdmv.ui.theme.Gray200
 import com.ifpe.traveldiarypdmv.ui.theme.GreenBase
 import com.ifpe.traveldiarypdmv.ui.theme.Typography
@@ -47,25 +54,70 @@ fun DetailsScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
 ) {
+
+    var menuExpanded by remember { mutableStateOf(false) } // Controle do menu
+
     val description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc molestie at quam ultrices efficitur. Praesent luctus bibendum porta. Vivamus efficitur vehicula ante, scelerisque mollis lectus ultricies ut. Ut tortor magna, semper ac porta vel, lobortis nec ligula. Sed in libero ornare, sollicitudin orci nec, fermentum lectus. Duis id urna et velit consequat venenatis. Aenean dapibus turpis risus, eu laoreet turpis consectetur at."
+
     Column(modifier = modifier
         .fillMaxWidth()
         .background(Color.White)
         .fillMaxSize()
         .padding(start = 10.dp, bottom = 12.dp, end = 12.dp, top = 25.dp),
     ){
-        IconButton(
+
+        Row(
             modifier = Modifier
-                .align(Alignment.Start),
-            onClick = {
-                navController.popBackStack()
-            },
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween // Distribui os elementos igualmente
         ) {
-            Icon(
-                modifier = Modifier,
-                imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Ícone de voltar para os Diários"
+            // Ícone de voltar (esquerda)
+            IconButton(
+                onClick = {
+                    navController.popBackStack()
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Voltar",
+                    tint = Color.Black
+                )
+            }
+
+            // Título centralizado
+            Text(
+                text = "Detalhe do Diário",
+                style = Typography.bodyLarge.copy(fontSize = 20.sp),
+                color = Color.Black
             )
+
+            // Ícone de menu (três pontos)
+            Box {
+                IconButton(onClick = { menuExpanded = true }) {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = "Menu de opções",
+                        tint = Color.Black
+                    )
+                }
+
+                // O DropdownMenu está dentro do Box, alinhando-se ao lado direito
+                TravelDiaryDropdownMenu(
+                    expanded = menuExpanded,
+                    onDismissRequest = { menuExpanded = false },
+                    onEditClick = {
+                        menuExpanded = false
+                        println("Editar Diário Selecionado")
+                    },
+                    onDeleteClick = {
+                        menuExpanded = false
+                        println("Excluir Diário Selecionado")
+                    },
+                    modifier = Modifier.align(Alignment.TopEnd) // Alinhando ao lado direito
+                )
+            }
         }
 
         Box{
