@@ -28,9 +28,9 @@ class RegisterViewModel : ViewModel() {
                 RegisterUiState(isLoading = false, isRegistered = true)
             } else {
                 val errorMessage = result.exceptionOrNull()?.message ?: "Erro desconhecido"
+                println("Mensagem de erro recebida: $errorMessage") // Log para depurar
                 RegisterUiState(isLoading = false, errorMessage = errorMessage)
             }
-
         }
     }
 

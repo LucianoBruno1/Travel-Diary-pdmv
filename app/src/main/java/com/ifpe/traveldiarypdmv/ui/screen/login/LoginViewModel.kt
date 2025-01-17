@@ -22,24 +22,28 @@ class LoginViewModel : ViewModel() {
     private fun login(email: String, password: String) {
         viewModelScope.launch {
             _uiState.value = uiState.value.copy(isLoading = true, errorMessage = null)
-            println("Iniciando login com email: $email") // Log de depuração
+
             val result = TravelDiaryRemoteDataSource.login(LoginRequest(email, password))
-            println("Resultado da requisição: $result") // Log de depuração
 
-            val response = result.getOrNull()
-
-            _uiState.value = if (result.isSuccess && response?.token != null) {
-
-                println("Login bem-sucedido")
-                uiState.value.copy(
-                    isLoading = false,
-                    isLoggedIn = true,
-                    token = response.token
-                )
+            _uiState.value = if (result.isSuccess) {
+                val response = result.getOrNull()
+                if (response?.token != null) {
+                    println("Login bem-sucedido")
+                    uiState.value.copy(
+                        isLoading = false,
+                        isLoggedIn = true,
+                        token = response.token
+                    )
+                } else {
+                    println("Erro inesperado: token nulo")
+                    uiState.value.copy(
+                        isLoading = false,
+                        isLoggedIn = false,
+                        errorMessage = "Erro inesperado ao fazer login"
+                    )
+                }
             } else {
-                val errorMessage = result.exceptionOrNull()?.message
-                    ?: result.getOrNull()?.message // Pega a mensagem da API, se existir
-                    ?: "Erro desconhecido" // Mensagem padrão
+                val errorMessage = result.exceptionOrNull()?.message ?: "Erro desconhecido"
                 println("Erro ao fazer login: $errorMessage")
                 uiState.value.copy(
                     isLoading = false,
