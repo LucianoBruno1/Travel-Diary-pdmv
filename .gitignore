@@ -14,3 +14,6 @@
 .cxx
 # Ignorar arquivo local com chaves
 local.properties
+
+# Ignore Kotlin error logs
+.kotlin/errors/*.log
