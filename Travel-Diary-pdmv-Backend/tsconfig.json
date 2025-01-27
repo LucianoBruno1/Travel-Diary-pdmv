@@ -1,0 +1,24 @@
+{
+  "extends": "@tsconfig/recommended/tsconfig.json",
+  "compilerOptions": {
+    "experimentalDecorators": true, // Habilita suporte a decoradores experimentais.
+    "emitDecoratorMetadata": true, // Emite metadados de tipo para declarações decoradas.
+
+    "forceConsistentCasingInFileNames": true, // Garante que os nomes de arquivos respeitem diferenciação de maiúsculas e minúsculas.
+
+    /* Configuração de saída */
+    "outDir": "./dist", // Especifica a pasta para saída dos arquivos emitidos.
+    
+    "rootDir": "src", // Diretório de código Typescript
+    "sourceMap": true, // Gera mapas de origem para facilitar o debug
+    "noImplicitAny": true, // Não permite declaração de variáveis ou parâmetros sem tipo
+    "noImplicitReturns": true, // Verifica se todas as funções possuem tipo de retorno informado
+    "noEmitOnError": true, // Não gera o código JS caso haja algum erro durante o processo de compilção
+    "strictNullChecks": false, // Permite que `null` e `undefined` sejam tratados como valores válidos.
+    "noUnusedLocals": true, // Sinaliza quando existem variáveis declaradas e não utilizadas
+    "strictFunctionTypes": true,
+  },
+  "compileOnSave": true,
+  "include": ["src/**/*"], // Inclui os diretórios para compilação.
+  "exclude": ["node_modules", "**/*.spec.ts", "dist"] // Exclui os diretórios especificados.
+}
