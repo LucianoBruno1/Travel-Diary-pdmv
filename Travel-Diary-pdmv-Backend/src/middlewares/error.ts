@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { ApiError, NotFoundError, UnauthorizedError } from '../helpers/api-erros';
 import { ValidationError } from '../helpers/api-erros'; // Importa sua classe de erro personalizada
 import { QueryFailedError } from 'typeorm';
+import { MulterError } from 'multer';
 
 export const errorMiddleware = (
   error: Error & Partial<ApiError>,
@@ -10,6 +11,25 @@ export const errorMiddleware = (
   _next: NextFunction
 ) => {
   console.error('Error:', error);
+
+   // Verifica se é um erro do Multer
+   if (error instanceof MulterError) {
+    let message = 'Erro de upload.';
+    if (error.code === 'LIMIT_UNEXPECTED_FILE') {
+      message = 'O número máximo de arquivos foi excedido ou campo inesperado foi enviado.';
+    } else if (error.code === 'LIMIT_FILE_SIZE') {
+      message = 'O tamanho do arquivo enviado excede o limite permitido.';
+    } else if (error.code === 'LIMIT_FILE_COUNT') {
+      message = 'O número máximo de arquivos permitidos foi excedido.';
+    } else if (error.code === 'LIMIT_FIELD_KEY') {
+      message = 'O nome do campo enviado é muito longo.';
+    }
+
+    return res.status(400).json({
+      status: 'error',
+      message,
+    });
+  }
 
   // Verifica se é erro de entrada duplicada no banco de dados
   if (error instanceof QueryFailedError && (error as any).code === 'ER_DUP_ENTRY') {

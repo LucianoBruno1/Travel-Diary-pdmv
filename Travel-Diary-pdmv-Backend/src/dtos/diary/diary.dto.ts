@@ -2,7 +2,7 @@ import z from "zod";
 import { AbstractDTO } from "../abstract.dto";
 
 const createDiarySchema = z.object({
-    name: z.string().min(1, "O nome do diário é obrigatório.").optional(),
+    name: z.string().optional(),
     description: z.string().optional(),
     travel_date: z.string().optional().refine(
         (value) => !value || !isNaN(Date.parse(value)),

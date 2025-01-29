@@ -19,7 +19,7 @@ export class DiaryRepository {
         const diaryRepository = this.dataSource.getRepository(Diary);
         return await diaryRepository.findOne({
             where: { id },
-            relations: ["photos"], // Inclui as fotos relacionadas
+            relations:  ["photos", "user"], // Inclui as fotos relacionadas
         });
     }
 

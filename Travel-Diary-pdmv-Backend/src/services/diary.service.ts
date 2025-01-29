@@ -1,5 +1,5 @@
 import { CreateDiaryRequestDto, DiaryResponseDto } from "../dtos/diary/diary.dto";
-import { BadRequestError } from "../helpers/api-erros";
+import { BadRequestError, NotFoundError } from "../helpers/api-erros";
 import { Diary } from "../models/diary.model";
 import { DiaryRepository } from "../repositories/diary.repository";
 import { UserRepository } from "../repositories/user.repository";
@@ -18,10 +18,6 @@ export class DiaryService {
     }
 
     async createDiaryByPhoto(latitude: number, longitude: number, city: string, state: string, id: string): Promise<Diary> {
-        //const { id, name, latitude, longitude, ...rest } = request.getAll();
-
-        // Obter cidade e estado a partir das coordenadas
-        //const { city, state } = await this.geocodingService.getCityByCoordinates(latitude, longitude);
 
         const existingDiary = await this.diaryRepository.findByStateAndUser(state, id);
         if (existingDiary) {
@@ -34,15 +30,13 @@ export class DiaryService {
         }
 
         // Definir o nome do diário
-        const diaryName = `${city}_${state}`;
+        const diaryName = `Viagem_à_${state}`;
 
         const diary = new Diary();
         Object.assign(diary, { city, state, latitude, longitude });
         diary.name = diaryName;
         diary.user = user;
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        diary.travel_date = today;
+        diary.travel_date = new Date();
         const savedDiary = await this.diaryRepository.save(diary);
         return savedDiary;
     }
@@ -68,7 +62,7 @@ export class DiaryService {
         }
     
         // Criar o nome do diário se não for fornecido
-        const diaryName = name || `${city}_${state}`;
+        const diaryName = name || `Viagem_à_${state}`;
 
         const diary = new Diary();
         Object.assign(diary, {
@@ -84,6 +78,12 @@ export class DiaryService {
 
         const savedDiary = await this.diaryRepository.save(diary);
         return this.toDiaryResponseDto(savedDiary);
+    }
+
+    async findById(id: string) {
+        const diary = await this.diaryRepository.findById(id);
+        if (!diary) throw new NotFoundError(`Diário com ID ${id} não encontrado`);
+        return this.toDiaryResponseDto(diary);
     }
 
 
