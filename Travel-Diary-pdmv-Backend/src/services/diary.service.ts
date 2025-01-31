@@ -17,6 +17,28 @@ export class DiaryService {
         this.geocodingService = new GeocodingService(process.env.GEOCODING_API_KEY);
     }
 
+    async getDiaryWithPhotos(diaryId: string): Promise<Diary> {
+        const diary = await this.diaryRepository.findDiaryWithPhotos(diaryId);
+    
+        if (!diary) {
+            throw new NotFoundError(`Diário com ID ${diaryId} não foi encontrado.`);
+        }
+    
+        return diary;
+    }
+
+     /**
+     * Retorna todos os diários de um usuário
+     * @param userId ID do usuário
+     */
+     async getDiariesForUser(userId: string) {
+        const diaries = await this.diaryRepository.findAllByUserId(userId);
+        if (diaries.length === 0) {
+            throw new NotFoundError("Nenhum diário encontrado para este usuário.");
+        }
+        return diaries;
+    }
+
     async createDiaryByPhoto(latitude: number, longitude: number, city: string, state: string, id: string): Promise<Diary> {
 
         const existingDiary = await this.diaryRepository.findByStateAndUser(state, id);

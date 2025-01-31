@@ -1,5 +1,6 @@
-import { Column, Entity } from "typeorm";
+import { Column, Entity, OneToMany } from "typeorm";
 import { BaseEntity } from "./base.model"
+import { Diary } from "./diary.model";
 
 @Entity("user")
 export class User extends BaseEntity {
@@ -18,4 +19,7 @@ export class User extends BaseEntity {
 
     @Column({ type: 'datetime', nullable: true })
     token_expiration?: Date; // Data de expiração do token
+
+    @OneToMany(() => Diary, (diary) => diary.user)
+    diaries: Diary[];
 }

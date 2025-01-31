@@ -8,6 +8,18 @@ export class DiaryController extends BaseController<DiaryService> {
         super(new DiaryService());
     }
 
+    async getDiaryDetails(req: Request, res: Response, next: NextFunction): Promise<void> {
+        const { id } = req.params;
+    
+        return this.handleRequest(req, res, next, async () => await this.service.getDiaryWithPhotos(id), "Sucesso", 200);
+    }
+
+    async getFeed(req: Request, res: Response, next: NextFunction) {
+        const { id } = req.params;
+        
+        return this.handleRequest(req, res, next, async () => this.service.getDiariesForUser(id), "Sucesso", 200);
+    }
+
     async createManual(req: Request, res: Response, next: NextFunction): Promise<void> {
         const dto = new CreateDiaryRequestDto({
             ...req.body,

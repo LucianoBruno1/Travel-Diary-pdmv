@@ -30,4 +30,25 @@ export class DiaryRepository {
             relations: ["user", "photos"], // Adicione as relações necessárias
         });
     }
+
+    /**
+     * Busca todos os diários associados a um usuário
+     * @param userId ID do usuário
+     * @returns Lista de diários
+     */
+    async findAllByUserId(userId: string): Promise<Diary[]> {
+        const diaryRepository = this.dataSource.getRepository(Diary);
+        return await diaryRepository.find({
+            where: { user: { id: userId } },
+            order: { created_at: "DESC" }, // Ordena por data de criação, mais recente primeiro
+        });
+    }
+
+    async findDiaryWithPhotos(diaryId: string): Promise<Diary | null> {
+        const diaryRepository = this.dataSource.getRepository(Diary);
+        return await diaryRepository.findOne({
+            where: { id: diaryId },
+            relations: ['photos'], // Inclui as fotos associadas
+        });
+    }
 }
