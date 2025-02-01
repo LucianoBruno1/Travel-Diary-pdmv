@@ -3,4 +3,7 @@ export type UserResponseDto = {
     created_at: Date;
     name: string;
     email: string;
+    birthDate: Date;
+    profilePicture: string;
+    bio: string;
 }

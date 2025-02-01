@@ -5,6 +5,7 @@ import { BaseController } from "./base/base.controller";
 import { LoginUserRequestDto } from "../dtos/user/login-user-request.dto";
 import { ForgotPasswordRequestDto } from "../dtos/user/forgotPassword-request.dto";
 import { ResetPasswordRequestDto } from "../dtos/user/resetPassword-request.dto";
+import { UpdateUserRequestDto } from "../dtos/user/update-user-request.dto";
 
 export class UserController extends BaseController<UserService> {
     constructor() {
@@ -40,18 +41,18 @@ export class UserController extends BaseController<UserService> {
         return this.handleRequest(req, res, next, async () => this.service.getProfile(id), "Usuário encontrado com sucesso", 200);
     }
 
-    // async update(req: Request, res: Response, next: NextFunction) {
-    //     const dto = new UpdateEnderecoRequestDto({
-    //         ...req.body
-    //     });
-    //     const id = req.params.id;
-    //     return this.handleRequest(req, res, next, async () => this.service.update(id, dto), "Endereço atualizado com sucesso", 200);
-    // }
-
-    async remove(req: Request, res: Response, next: NextFunction) {
+    async update(req: Request, res: Response, next: NextFunction) {
+        const dto = new UpdateUserRequestDto({
+            ...req.body
+        });
         const id = req.params.id;
-        return this.handleRequest(req, res, next, async () => this.service.remove(id), "Representante removido com sucesso", 200);
+        return this.handleRequest(req, res, next, async () => this.service.update(id, dto), "Usuário atualizado com sucesso", 200);
     }
+
+    // async remove(req: Request, res: Response, next: NextFunction) {
+    //     const id = req.params.id;
+    //     return this.handleRequest(req, res, next, async () => this.service.remove(id), "Representante removido com sucesso", 200);
+    // }
 
     // async findAll(req: Request, res: Response, next: NextFunction) {
     //     return this.handleRequest(req, res, next, async () => this.service.findAll(), "Esses são todos os representantes");

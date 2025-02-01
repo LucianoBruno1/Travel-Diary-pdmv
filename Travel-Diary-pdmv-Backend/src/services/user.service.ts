@@ -11,6 +11,7 @@ import crypto from "crypto";
 import { ResetPasswordRequestDto } from "../dtos/user/resetPassword-request.dto";
 import { ForgotPasswordRequestDto } from "../dtos/user/forgotPassword-request.dto";
 import transporter from "../utils/emailTransporter";
+import { UpdateUserRequestDto } from "../dtos/user/update-user-request.dto";
 
 export class UserService {
     private repository: UserRepository;
@@ -77,17 +78,37 @@ export class UserService {
         if (!user) {
             throw new NotFoundError(`Usuário com ID ${id} não encontrado`);
         }
-        
+
         const userDto = this.toUserResponseDto(user);
         return userDto;
     }
 
-    async remove(id: string) {
+    async update(id: string, dto: UpdateUserRequestDto) {
+        const user = await this.repository.findById(id);
+        if (!user) throw new NotFoundError(`Usuário com ID ${id} não encontrado`);
+
+        const data = dto.getAll();
+
+        user.name = data.name ?? user.name;
+        user.email = data.email ?? user.email;
+        user.profilePicture = data.profilePicture ?? user.profilePicture;
+        user.bio = data.bio ?? user.bio;
+        user.birthDate = new Date(data.birthDate) ?? user.birthDate;
+
+        if (data.password) {
+            user.password = await bcrypt.hash(data.password, 10);
+        }
+
+
+        const userUpdate = await this.repository.update(id, user);
+        return this.toUserResponseDto(userUpdate);
 
     }
 
-    private toUserResponseDto({ id, created_at, name, email }: User): UserResponseDto {
-        return { id, created_at, name, email };
+    private toUserResponseDto({ id, created_at, name, email, birthDate,
+        profilePicture,
+        bio }: User): UserResponseDto {
+        return { id, created_at, name, email, birthDate, profilePicture, bio };
     }
 
     private toUserLoginResponseDto({ id, name, email }: User): UserLoginResponseDto {
@@ -102,7 +123,7 @@ export class UserService {
         const { email } = dto.getAll();
         const user = await this.repository.findOne(email);
         if (!user) throw new NotFoundError("Usuário não encontrado");
-        
+
         const token = crypto.randomBytes(32).toString('hex');
         const expiration = new Date(Date.now() + 3600000); // 1 hora a partir de agora EX.: 21:02 + 1 = 22:02 < 21:25
 
@@ -120,12 +141,12 @@ export class UserService {
         if (!user || user.token_expiration < new Date()) {
             throw new BadRequestError("Token inválido ou expirado");
         }
-    
+
         user.password = await bcrypt.hash(newPassword, 10);
         user.reset_token = null;
         user.token_expiration = null;
         await this.repository.save(user);
-    
+
         return { message: "Senha atualizada com sucesso" };
     }
 

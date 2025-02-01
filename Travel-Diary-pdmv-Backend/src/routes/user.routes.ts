@@ -14,10 +14,8 @@ userRoutes.get('/profile/:id', ((req: Request, res: Response, next: NextFunction
          authenticateJWT(req, res, next)
      }), userController.getProfile.bind(userController));
 
-// userRoutes.patch('/socio/:id', ((req: Request, res: Response, next: NextFunction) => {
-//     authenticateJWT(req, res, next)
-// }), userController.update.bind(userController));
+userRoutes.patch('/user/:id', userController.update.bind(userController));
 
-userRoutes.delete('/user/:id', userController.remove.bind(userController));
+//userRoutes.delete('/user/:id', userController.remove.bind(userController));
 
 export default userRoutes;
