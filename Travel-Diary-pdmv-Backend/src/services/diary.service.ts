@@ -1,22 +1,21 @@
 import { CreateDiaryRequestDto, DiaryResponseDto } from "../dtos/diary/diary.dto";
 import { BadRequestError, NotFoundError } from "../helpers/api-erros";
 import { Diary } from "../models/diary.model";
-import { MapPoint } from "../models/map_point.model";
 import { DiaryRepository } from "../repositories/diary.repository";
-import { MapPointRepository } from "../repositories/map_point.repository";
 import { UserRepository } from "../repositories/user.repository";
 import { GeocodingService } from "./geocoding.service";
+import { MapPointService } from "./map_point.service";
 
 export class DiaryService {
     private diaryRepository: DiaryRepository;
     private userRepository: UserRepository;
     private geocodingService: GeocodingService;
-    private mapPointRepository: MapPointRepository;
+    private mapPointService: MapPointService;
 
     constructor() {
         this.diaryRepository = new DiaryRepository();
         this.userRepository = new UserRepository();
-        this.mapPointRepository = new MapPointRepository();
+        this.mapPointService = new MapPointService();
         this.geocodingService = new GeocodingService(process.env.GEOCODING_API_KEY);
     }
 
@@ -64,11 +63,7 @@ export class DiaryService {
         diary.travel_date = new Date();
         const savedDiary = await this.diaryRepository.save(diary);
 
-        const mapPoint = new MapPoint();
-        mapPoint.diary = savedDiary
-        mapPoint.latitude = latitude
-        mapPoint.longitude = longitude
-        await this.mapPointRepository.save(mapPoint)
+        await this.mapPointService.create(latitude, longitude, user, savedDiary);
 
         return savedDiary;
     }
@@ -110,11 +105,7 @@ export class DiaryService {
 
         const savedDiary = await this.diaryRepository.save(diary);
 
-        const mapPoint = new MapPoint();
-        mapPoint.diary = savedDiary
-        mapPoint.latitude = latitude
-        mapPoint.longitude = longitude
-        await this.mapPointRepository.save(mapPoint)
+        await this.mapPointService.create(latitude, longitude, user, savedDiary);
 
         return this.toDiaryResponseDto(savedDiary);
     }

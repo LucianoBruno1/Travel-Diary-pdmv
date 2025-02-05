@@ -14,4 +14,12 @@ export class MapPointRepository {
         const mapPoint = mapPointRepository.create(pointData);
         return await mapPointRepository.save(mapPoint);
     }
+
+    async findByUser(userId: string): Promise<MapPoint[]> {
+        const mapPointRepository = this.dataSource.getRepository(MapPoint);
+        return await mapPointRepository.find({
+            where: { user: { id: userId } },
+            relations: ["diary"],
+        });
+    }
 }

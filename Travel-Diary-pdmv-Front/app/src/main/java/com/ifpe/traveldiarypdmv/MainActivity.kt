@@ -7,8 +7,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -116,7 +118,14 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(BottomNavItem.Profile.route) { ProfileScreen() }
-                        composable(BottomNavItem.Map.route) {  MapScreen() }
+                        composable(BottomNavItem.Map.route) {
+                            val userId = uiState.userId ?: ""
+                            if (userId.isNotBlank()) {
+                                MapScreen(userId = userId)
+                            } else {
+                                Text(text = "Carregando mapa...", modifier = Modifier.padding(16.dp))
+                            }
+                        }
                         composable(BottomNavItem.Favorite.route) { /* SettingsScreen() */ }
 
                     }

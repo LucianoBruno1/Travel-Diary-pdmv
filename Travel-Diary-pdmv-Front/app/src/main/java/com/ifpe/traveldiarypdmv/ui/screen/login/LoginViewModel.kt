@@ -32,7 +32,8 @@ class LoginViewModel : ViewModel() {
                     uiState.value.copy(
                         isLoading = false,
                         isLoggedIn = true,
-                        token = response.token
+                        token = response.token,
+                        userId = response.user?.id
                     )
                 } else {
                     println("Erro inesperado: token nulo")
