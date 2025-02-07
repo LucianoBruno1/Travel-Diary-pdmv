@@ -34,6 +34,12 @@ import com.ifpe.traveldiarypdmv.ui.screen.register.RegisterScreen
 import com.ifpe.traveldiarypdmv.ui.screen.register.RegisterViewModel
 import com.ifpe.traveldiarypdmv.ui.screen.splash.SplashScreen
 import com.ifpe.traveldiarypdmv.ui.theme.TravelDiaryPDMVTheme
+import android.Manifest
+import android.content.pm.PackageManager
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+
 
 class MainActivity : ComponentActivity() {
     private val viewModelLogin: LoginViewModel by viewModels()
@@ -42,6 +48,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        requestLocationPermission() // Solicita a permissão ao iniciar
+
         setContent {
             TravelDiaryPDMVTheme {
                 val navController = rememberNavController()
@@ -131,6 +139,25 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+    }
+    private fun requestLocationPermission() {
+        val permissions = arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
+
+        val allPermissionsGranted = permissions.all {
+            ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
+        }
+
+        if (!allPermissionsGranted) {
+            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+                val granted = permissions.entries.all { it.value }
+                if (!granted) {
+                    Toast.makeText(this, "Permissão de localização necessária", Toast.LENGTH_SHORT).show()
+                }
+            }.launch(permissions)
         }
     }
 }
