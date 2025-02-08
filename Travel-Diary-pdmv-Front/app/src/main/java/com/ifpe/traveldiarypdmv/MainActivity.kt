@@ -125,7 +125,15 @@ class MainActivity : ComponentActivity() {
                             DetailsScreen(navController = navController)
                         }
 
-                        composable(BottomNavItem.Profile.route) { ProfileScreen() }
+                        composable(BottomNavItem.Profile.route) {
+                            val userId = uiState.userId ?: ""
+                            val token = uiState.token ?: ""
+                            if (userId.isNotBlank()) {
+                                ProfileScreen(userId = userId, token = token)
+                            } else {
+                                Text(text = "Carregando Perfil...", modifier = Modifier.padding(16.dp))
+                            }
+                        }
                         composable(BottomNavItem.Map.route) {
                             val userId = uiState.userId ?: ""
                             if (userId.isNotBlank()) {

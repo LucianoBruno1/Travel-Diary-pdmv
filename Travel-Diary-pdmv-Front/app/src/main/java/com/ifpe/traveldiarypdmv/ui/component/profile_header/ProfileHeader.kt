@@ -14,7 +14,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -27,7 +26,7 @@ import com.ifpe.traveldiarypdmv.ui.theme.GreenBase
 import com.ifpe.traveldiarypdmv.ui.theme.Typography
 
 @Composable
-fun ProfileHeader() {
+fun ProfileHeader(profilePicture: String?, name: String, birthDate: String?) {
     Row(
         modifier = Modifier
             .background(Color.White)
@@ -40,8 +39,15 @@ fun ProfileHeader() {
                     .heightIn(max = 100.dp)
                     .clip(RoundedCornerShape(50.dp))
             ) {
+                // Verificando se profilePicture é nulo e usando imagem padrão se necessário
+                val imagePainter = if (profilePicture.isNullOrEmpty()) {
+                    painterResource(id = R.drawable.map_with_bags)
+                } else {
+                    painterResource(id = R.drawable.map_with_bags) // Aqui você pode usar a URL para carregar a imagem, se necessário
+                }
+
                 Image(
-                    painter = painterResource(id = R.drawable.map_with_bags),
+                    painter = imagePainter,
                     contentDescription = "Imagem de Perfil do Usuário",
                     modifier = Modifier
                         .width(100.dp)
@@ -58,7 +64,7 @@ fun ProfileHeader() {
                 containerColor = GreenBase,
                 contentColor = Color.White,
                 onClick = {
-                    //viewModel.onEvent(LoginUiEvent.OnLoginClicked(email, password))
+                    // Lógica de carregamento da imagem ou outra ação
                 },
                 fontSize = 12f
             )
@@ -67,18 +73,19 @@ fun ProfileHeader() {
         Column(modifier = Modifier.padding(15.dp)) {
             Spacer(modifier = Modifier.height(50.dp))
             Text(
-                text = "Adonai Ermínio",
+                text = name,  // Nome sendo passado pelo parâmetro
                 style = Typography.headlineLarge.copy(fontSize = 16.sp)
             )
             Spacer(modifier = Modifier.height(10.dp))
             Row {
                 Text(
                     text = "Nasc.:",
-                    style = Typography.bodyMedium.copy(fontSize = 12.sp)
+                    style = Typography.bodyMedium.copy(fontSize = 12.sp, color = Color.Black),
                 )
                 Spacer(modifier = Modifier.width(4.dp))
+                // Verificando se birthDate é nulo e exibindo um valor padrão
                 Text(
-                    text = "XX/XX/XXXX",
+                    text = birthDate ?: "Data de nascimento não informada",
                     style = Typography.bodySmall.copy(fontSize = 12.sp)
                 )
             }
@@ -89,5 +96,5 @@ fun ProfileHeader() {
 @Preview
 @Composable
 private fun ProfileHeaderPreview() {
-    ProfileHeader()
+    ProfileHeader(null , "Eduardo", "22/01/1998")
 }

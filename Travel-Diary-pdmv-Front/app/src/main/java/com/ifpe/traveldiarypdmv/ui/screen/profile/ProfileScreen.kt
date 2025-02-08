@@ -18,6 +18,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,31 +30,41 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ifpe.traveldiarypdmv.ui.component.button.TravelDiaryButton
 import com.ifpe.traveldiarypdmv.ui.component.profile_header.ProfileHeader
 import com.ifpe.traveldiarypdmv.ui.theme.GreenBase
 
 @Composable
-fun ProfileScreen(modifier: Modifier = Modifier) {
+fun ProfileScreen(
+    modifier: Modifier = Modifier,
+    viewModel: ProfileViewModel = viewModel(),
+    userId: String,
+    token: String
+) {
+    val uiState by viewModel.uiState.collectAsState()
+    var biography by remember(uiState.bio) { mutableStateOf(uiState.bio ?: "Conte-nos sobre você...") }
+
+
+    LaunchedEffect(Unit) {
+        viewModel.onEvent(ProfileUiEvent.LoadProfile(userId, token))
+    }
+
     Box(
         modifier = modifier
             .fillMaxSize()
             .background(Color.White)
             .padding(26.dp),
     ) {
-        // Box para o ProfileHeader com sombra
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .shadow(8.dp, shape = RoundedCornerShape(16.dp), ambientColor = Color.Black.copy(alpha = 0.3f)) // Sombra
+                .shadow(8.dp, shape = RoundedCornerShape(16.dp), ambientColor = Color.Black.copy(alpha = 0.3f))
                 .background(Color.White)
                 .padding(20.dp)
         ) {
-
-            ProfileHeader()
-
+            ProfileHeader(profilePicture = uiState.profilePicture, name = uiState.name, birthDate = uiState.birthDate)
         }
-
 
         IconButton(
             modifier = Modifier
@@ -84,8 +96,6 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
 
             Spacer(modifier = Modifier.height(50.dp))
 
-            var biography by remember { mutableStateOf("Conte-nos sobre você...") }
-
             OutlinedTextField(
                 value = biography,
                 onValueChange = { biography = it },
@@ -96,7 +106,7 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
                     .heightIn(min = 150.dp)
                     .padding(top = 16.dp),
                 maxLines = 10,
-                singleLine = false,  // Permite múltiplas linhas
+                singleLine = false,
             )
             Spacer(modifier = Modifier.height(20.dp))
             TravelDiaryButton(
@@ -105,16 +115,9 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
                 containerColor = GreenBase,
                 contentColor = Color.White,
                 onClick = {
-                    //viewModel.onEvent(LoginUiEvent.OnLoginClicked(email, password))
+
                 }
             )
         }
     }
-}
-
-
-@Preview
-@Composable
-private fun ProfileScreenPreview() {
-    ProfileScreen()
 }
