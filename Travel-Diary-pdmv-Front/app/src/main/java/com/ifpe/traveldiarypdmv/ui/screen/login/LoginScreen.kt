@@ -22,12 +22,14 @@ import com.ifpe.traveldiarypdmv.ui.theme.Gray100
 import com.ifpe.traveldiarypdmv.ui.theme.GreenBase
 import com.ifpe.traveldiarypdmv.ui.theme.Typography
 
+
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel,
     onNavigateToHome: () -> Unit,
-    onNavigateToRegister: () -> Unit
+    onNavigateToRegister: () -> Unit,
+    onNavigateToRecoverPassword: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -86,6 +88,9 @@ fun LoginScreen(
                 text = "Esqueceu a senha?",
                 style = Typography.bodyMedium,
                 modifier = Modifier
+                    .clickable {
+                        onNavigateToRecoverPassword()
+                    }
                     .align(Alignment.End)
                     .padding(16.dp)
             )

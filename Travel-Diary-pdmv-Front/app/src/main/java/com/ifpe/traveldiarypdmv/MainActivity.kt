@@ -21,6 +21,7 @@ import com.ifpe.traveldiarypdmv.ui.component.bottom_navigation.BottomNavigationB
 import com.ifpe.traveldiarypdmv.ui.route.Details
 import com.ifpe.traveldiarypdmv.ui.route.Home
 import com.ifpe.traveldiarypdmv.ui.route.Login
+import com.ifpe.traveldiarypdmv.ui.route.RecoverPassword
 import com.ifpe.traveldiarypdmv.ui.route.Register
 import com.ifpe.traveldiarypdmv.ui.route.Splash
 import com.ifpe.traveldiarypdmv.ui.screen.details.DetailsScreen
@@ -30,6 +31,7 @@ import com.ifpe.traveldiarypdmv.ui.screen.login.LoginUiEvent
 import com.ifpe.traveldiarypdmv.ui.screen.login.LoginViewModel
 import com.ifpe.traveldiarypdmv.ui.screen.map.MapScreen
 import com.ifpe.traveldiarypdmv.ui.screen.profile.ProfileScreen
+import com.ifpe.traveldiarypdmv.ui.screen.recoverpassword.RecoverPasswordScreen
 import com.ifpe.traveldiarypdmv.ui.screen.register.RegisterScreen
 import com.ifpe.traveldiarypdmv.ui.screen.register.RegisterViewModel
 import com.ifpe.traveldiarypdmv.ui.screen.splash.SplashScreen
@@ -89,7 +91,8 @@ class MainActivity : ComponentActivity() {
                                 onNavigateToHome = {
                                     navController.navigate(BottomNavItem.Home.route)
                                 },
-                                onNavigateToRegister = { navController.navigate(Register.route) }
+                                onNavigateToRegister = { navController.navigate(Register.route) },
+                                onNavigateToRecoverPassword = {navController.navigate(RecoverPassword.route)}
                             )
                         }
 
@@ -100,7 +103,10 @@ class MainActivity : ComponentActivity() {
                                 navController = navController
                             )
                         }
-
+                        composable(RecoverPassword.route)  {
+                            RecoverPasswordScreen(
+                            )
+                        }
                         composable(Home.route) {
                             HomeScreen(onLogout = {
                                 viewModelLogin.onEvent(LoginUiEvent.OnResetError)
