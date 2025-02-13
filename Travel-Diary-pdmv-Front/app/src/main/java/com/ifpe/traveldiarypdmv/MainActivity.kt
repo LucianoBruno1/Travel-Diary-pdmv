@@ -30,6 +30,7 @@ import com.ifpe.traveldiarypdmv.ui.screen.login.LoginUiEvent
 import com.ifpe.traveldiarypdmv.ui.screen.login.LoginViewModel
 import com.ifpe.traveldiarypdmv.ui.screen.map.MapScreen
 import com.ifpe.traveldiarypdmv.ui.screen.profile.ProfileScreen
+import com.ifpe.traveldiarypdmv.ui.screen.recoverpassword.RecoverPasswordScreen
 import com.ifpe.traveldiarypdmv.ui.screen.register.RegisterScreen
 import com.ifpe.traveldiarypdmv.ui.screen.register.RegisterViewModel
 import com.ifpe.traveldiarypdmv.ui.screen.splash.SplashScreen
@@ -57,37 +58,40 @@ class MainActivity : ComponentActivity() {
                 // Observar o estado de autenticação
                 val uiState by viewModelLogin.uiState.collectAsStateWithLifecycle()
                 val isLoggedIn = uiState.isLoggedIn
+                val userId = uiState.userId ?: ""
 
+
+                val apiService = ApiService.create()
+                val diaryRepository = DiaryRepository(apiService)
 
                 Scaffold(
                     bottomBar = {
-                        val currentRoute = navController
-                            .currentBackStackEntryAsState()
-                            .value?.destination?.route
+                        val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
                         if (isLoggedIn && currentRoute in listOf(
                                 BottomNavItem.Home.route,
                                 BottomNavItem.Map.route,
                                 BottomNavItem.Favorite.route,
-                                BottomNavItem.Profile.route,
-
+                                BottomNavItem.Profile.route
                             )
                         ) {
                             BottomNavigationBar(navController = navController)
                         }
                     }
-                ) { padding -> // padding
+                ) { padding ->
                     NavHost(
                         navController = navController,
                         startDestination = if (isLoggedIn) BottomNavItem.Home.route else Splash.route,
-                        modifier = Modifier.padding(padding) // Aplica o padding aqui
+                        modifier = Modifier.padding(padding)
                     ) {
-                        // Rotas de autenticação
+                        // Splash Screen
                         composable(Splash.route) {
-                            SplashScreen(onNavigateToLogin = {
-                                navController.navigate(Login.route) {
-                                    popUpTo(Splash.route) { inclusive = true }
+                            SplashScreen(
+                                onNavigateToLogin = {
+                                    navController.navigate(Login.route) {
+                                        popUpTo(Splash.route) { inclusive = true }
+                                    }
                                 }
-                            })
+                            )
                         }
 
                         // Login Screen
@@ -95,32 +99,43 @@ class MainActivity : ComponentActivity() {
                             LoginScreen(
                                 viewModel = viewModelLogin,
                                 onNavigateToHome = {
-                                    navController.navigate(BottomNavItem.Home.route)
+                                    navController.navigate(BottomNavItem.Home.route) {
+                                        popUpTo(0) { inclusive = true }
+                                    }
                                 },
-                                onNavigateToRegister = { navController.navigate(Register.route) }
+                                onNavigateToRegister = { navController.navigate(Register.route) },
+                                onNavigateToRecoverPassword = { navController.navigate(RecoverPassword.route) }
                             )
                         }
 
                         // Register Screen
-                        composable(Register.route)  {
-                            RegisterScreen(
-                                viewModel = viewModelRegister,
-                                navController = navController
+                        composable(Register.route) {
+                            RegisterScreen(viewModel = viewModelRegister, navController = navController)
+                        }
+
+                        // Recover Password Screen
+                        composable(RecoverPassword.route) {
+                            RecoverPasswordScreen()
+                        }
+
+
+                        composable(Home.route) {
+                            HomeScreen(
+                                userId = userId,
+                                repository = diaryRepository,
+                                onLogout = {
+                                    viewModelLogin.onEvent(LoginUiEvent.OnResetError)
+                                    navController.navigate(Splash.route) {
+                                        popUpTo(0) { inclusive = true }
+                                    }
+                                },
+                                onNavigateToDetails = {
+                                    navController.navigate(Details.route)
+                                }
                             )
                         }
 
-                        composable(Home.route) {
-                            HomeScreen(onLogout = {
-                                viewModelLogin.onEvent(LoginUiEvent.OnResetError)
-                                navController.navigate(Splash.route) {
-                                    popUpTo(0) // Limpa a pilha
-                                }
-                            },
-                                onNavigateToDetails = {
-                                    navController.navigate(Details.route) // Navegar para a rota de detalhes
-                                })
-                        }
-
+                        // Details Screen
                         composable(Details.route) {
                             DetailsScreen(navController = navController)
                         }
@@ -134,16 +149,24 @@ class MainActivity : ComponentActivity() {
                                 Text(text = "Carregando Perfil...", modifier = Modifier.padding(16.dp))
                             }
                         }
+                        // Profile Screen
+                        composable(BottomNavItem.Profile.route) {
+                            ProfileScreen()
+                        }
+
+                        // Map Screen
                         composable(BottomNavItem.Map.route) {
-                            val userId = uiState.userId ?: ""
                             if (userId.isNotBlank()) {
                                 MapScreen(userId = userId)
                             } else {
                                 Text(text = "Carregando mapa...", modifier = Modifier.padding(16.dp))
                             }
                         }
-                        composable(BottomNavItem.Favorite.route) { /* SettingsScreen() */ }
 
+                        // Favorite Screen (placeholder)
+                        composable(BottomNavItem.Favorite.route) {
+                            Text(text = "Tela de Favoritos em construção...", modifier = Modifier.padding(16.dp))
+                        }
                     }
                 }
             }

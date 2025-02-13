@@ -1,4 +1,4 @@
-package com.ifpe.traveldiarypdmv.ui.screen.recoverpassword
+package com.ifpe.traveldiarypdmv.ui.screen.resetpassword
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,20 +22,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import com.ifpe.traveldiarypdmv.R
-import com.ifpe.traveldiarypdmv.ui.component.button.TravelDiaryButton
 import com.ifpe.traveldiarypdmv.ui.component.text_input.TravelDiaryTextField
 import com.ifpe.traveldiarypdmv.ui.theme.GreenBase
 import com.ifpe.traveldiarypdmv.ui.theme.Typography
+import com.ifpe.traveldiarypdmv.ui.component.button.TravelDiaryButton
 
 @Composable
-fun RecoverPasswordScreen(
-
-){
-
-    val email = remember { mutableStateOf("") }
+fun ResetPasswordScreen(){
+    val password = remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier.fillMaxSize().background(color = Color.White)
@@ -54,26 +50,26 @@ fun RecoverPasswordScreen(
             verticalArrangement = Arrangement.Top
         ) {
             Text(
-                text = "RECUPERAR SENHA",
+                text = "REDEFINIR",
                 style = Typography.headlineLarge.copy(fontSize = 26.sp),
                 modifier = Modifier
                     .padding(bottom = 25.dp)
                     .align(Alignment.Start),
                 fontWeight = FontWeight.Bold
             )
-            Text(
-                text = "Digite seu email e um código será enviado para que você possa redefinir sua senha",
-                style = Typography.headlineLarge.copy(fontSize = 14.sp),
-                modifier = Modifier
-                    .padding(bottom = 25.dp)
-                    .align(Alignment.Start),
+            TravelDiaryTextField(
+                value = password.value,
+                onValueChange = { password.value = it },
+                labelText = "Nova senha",
+                leadingIconPainter = painterResource(id = R.drawable.ic_lock),
+                leadingIconDescription = "Ícone de Email"
             )
             TravelDiaryTextField(
-                value = email.value,
-                onValueChange = { email.value = it },
-                labelText = "Digite seu email",
-                leadingIconPainter = painterResource(id = R.drawable.ic_email),
-                leadingIconDescription = "Ícone de Email"
+                value = password.value,
+                onValueChange = { password.value = it },
+                labelText = "Confirmar senha",
+                leadingIconPainter = painterResource(id = R.drawable.ic_lock),
+                leadingIconDescription = "Ícone de senha"
             )
             TravelDiaryButton(
                 modifier = Modifier.fillMaxWidth(),
@@ -88,5 +84,5 @@ fun RecoverPasswordScreen(
                 text = "Retornar",
                 textDecoration = TextDecoration.Underline
             )
-    }
-}}
+        }
+    }}

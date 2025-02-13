@@ -31,3 +31,7 @@ data object Profile {
 data object Details {
     const val route = "details"
 }
+@Serializable
+data object RecoverPassword {
+    const val route = "recoverpassword"
+}
