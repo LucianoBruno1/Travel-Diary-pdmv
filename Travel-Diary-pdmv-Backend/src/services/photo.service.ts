@@ -6,6 +6,7 @@ import { BadRequestError, NotFoundError } from "../helpers/api-erros";
 import { DiaryService } from "./diary.service";
 import { UserRepository } from "../repositories/user.repository";
 import { Diary } from "../models/diary.model";
+import path from "path";
 
 export class PhotoService {
     private photoRepository: PhotoRepository;
@@ -33,8 +34,15 @@ export class PhotoService {
         const { city, state } = await this.geocodingService.getCityByCoordinates(latitude, longitude);
 
         const diary = await this.diaryService.createDiaryByPhoto(latitude, longitude, city, state, id);
-        
-        const photo = await this.savePhoto({ latitude, longitude, file_path, ...rest }, diary);
+
+        const uploadDir = path.resolve(__dirname, '..', 'uploads'); 
+        const fileName = file_path; 
+        let relativeFilePath = path.relative(uploadDir, fileName); 
+        relativeFilePath = relativeFilePath.replace(/\\/g, '/'); 
+        // Adiciona o caminho base para a URL
+        const finalFilePath = path.join('/uploads/diarios', relativeFilePath);
+                
+        const photo = await this.savePhoto({ latitude, longitude, file_path: finalFilePath, ...rest }, diary);
         return this.toPhotoResponseDto(photo);
     }
 
@@ -56,11 +64,19 @@ export class PhotoService {
         Object.assign(d, diary);
     
 
-        // Criar e salvar todas as fotos
+        const uploadDir = path.resolve(__dirname, '..', 'uploads');
+
         const photos = await Promise.all(
-            file_paths.map(filePath => this.savePhoto({ file_path: filePath }, d))
+            file_paths.map(async (filePath) => {
+                let relativeFilePath = path.relative(uploadDir, filePath);
+                relativeFilePath = relativeFilePath.replace(/\\/g, '/');
+                
+                const finalFilePath = path.join('/uploads/diarios', relativeFilePath);
+                
+                return this.savePhoto({ file_path: finalFilePath }, d);
+            })
         );
-        
+
         return {
             photos: photos.map(photo => ({
                 id: photo.id,
@@ -78,7 +94,8 @@ export class PhotoService {
     }
 
     private toPhotoResponseDto({ id, created_at, file_path, diary, latitude, longitude }: Photo): PhotoResponseDto {
-        return { id, created_at, file_path, diary: { id: diary.id }, latitude, longitude };
+        const correctedFilePath = file_path.replace(/\\/g, '/');
+        return { id, created_at, file_path: correctedFilePath, diary: { id: diary.id }, latitude, longitude };
     }
 
 }

@@ -40,6 +40,11 @@ import android.content.pm.PackageManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
+import com.ifpe.traveldiarypdmv.data.network.ApiService
+import com.ifpe.traveldiarypdmv.data.repository.DiaryRepository
+import com.ifpe.traveldiarypdmv.ui.route.RecoverPassword
 
 
 class MainActivity : ComponentActivity() {
@@ -129,19 +134,23 @@ class MainActivity : ComponentActivity() {
                                         popUpTo(0) { inclusive = true }
                                     }
                                 },
-                                onNavigateToDetails = {
-                                    navController.navigate(Details.route)
+                                onNavigateToDetails = { diaryId ->
+                                    navController.navigate("details/$diaryId")
                                 }
                             )
                         }
 
                         // Details Screen
-                        composable(Details.route) {
-                            DetailsScreen(navController = navController)
+                        composable(
+                            route = "${Details.route}/{diaryId}",
+                            arguments = listOf(navArgument("diaryId") { type = NavType.StringType })
+                        ) { backStackEntry ->
+                            val token = uiState.token ?: ""
+                            val diaryId = backStackEntry.arguments?.getString("diaryId") ?: ""
+                            DetailsScreen(navController = navController, diaryId = diaryId, token = token)
                         }
 
                         composable(BottomNavItem.Profile.route) {
-                            val userId = uiState.userId ?: ""
                             val token = uiState.token ?: ""
                             if (userId.isNotBlank()) {
                                 ProfileScreen(userId = userId, token = token)
@@ -149,10 +158,7 @@ class MainActivity : ComponentActivity() {
                                 Text(text = "Carregando Perfil...", modifier = Modifier.padding(16.dp))
                             }
                         }
-                        // Profile Screen
-                        composable(BottomNavItem.Profile.route) {
-                            ProfileScreen()
-                        }
+
 
                         // Map Screen
                         composable(BottomNavItem.Map.route) {

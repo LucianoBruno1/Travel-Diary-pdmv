@@ -1,5 +1,7 @@
 [versions]
 agp = "8.7.3"
+converterGson = "2.9.0"
+gson = "2.10.1"
 kotlin = "2.0.20"
 coreKtx = "1.15.0"
 junit = "4.13.2"
@@ -13,12 +15,15 @@ coil = "3.0.0-rc01"
 navigation = "2.8.3"
 kotlinSerialization = "1.7.3"
 ktorBom = "3.0.0"
+retrofit = "2.9.0"
 zxing = "3.5.1"
 zxingAndroidEmbedded = "4.3.0"
 playServicesLocation = "21.3.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -43,6 +48,7 @@ ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-conte
 ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging" }
 ktor-client-serialization = { group = "io.ktor", name = "ktor-client-serialization" }
 ktor-client-serialization-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 zxing = { group = "com.google.zxing", name = "core", version.ref = "zxing" }
 zxing-android-embedded = { group = "com.journeyapps", name = "zxing-android-embedded", version.ref = "zxingAndroidEmbedded" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }

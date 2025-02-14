@@ -1,15 +1,14 @@
 package com.ifpe.traveldiarypdmv.ui.component.profile_header
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -39,11 +38,10 @@ fun ProfileHeader(profilePicture: String?, name: String, birthDate: String?) {
                     .heightIn(max = 100.dp)
                     .clip(RoundedCornerShape(50.dp))
             ) {
-                // Verificando se profilePicture é nulo e usando imagem padrão se necessário
                 val imagePainter = if (profilePicture.isNullOrEmpty()) {
                     painterResource(id = R.drawable.map_with_bags)
                 } else {
-                    painterResource(id = R.drawable.map_with_bags) // Aqui você pode usar a URL para carregar a imagem, se necessário
+                    painterResource(id = R.drawable.map_with_bags)
                 }
 
                 Image(
@@ -63,18 +61,29 @@ fun ProfileHeader(profilePicture: String?, name: String, birthDate: String?) {
                 text = "Carregar",
                 containerColor = GreenBase,
                 contentColor = Color.White,
-                onClick = {
-                    // Lógica de carregamento da imagem ou outra ação
-                },
+                onClick = {},
                 fontSize = 12f
             )
         }
         Spacer(modifier = Modifier.width(16.dp))
         Column(modifier = Modifier.padding(15.dp)) {
-            Spacer(modifier = Modifier.height(50.dp))
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Spacer(modifier = Modifier.weight(1f))
+                IconButton(
+                    modifier = Modifier.padding(16.dp),
+                    onClick = {
+                        Log.d("IconButton", "Botão de configurações clicado!")
+                    },
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = "Ícone de configuração do APP"
+                    )
+                }
+            }
             Text(
-                text = name,  // Nome sendo passado pelo parâmetro
-                style = Typography.headlineLarge.copy(fontSize = 16.sp)
+                text = name,
+                style = Typography.headlineLarge.copy(fontSize = 16.sp, color = Color.Black)
             )
             Spacer(modifier = Modifier.height(10.dp))
             Row {
@@ -83,7 +92,6 @@ fun ProfileHeader(profilePicture: String?, name: String, birthDate: String?) {
                     style = Typography.bodyMedium.copy(fontSize = 12.sp, color = Color.Black),
                 )
                 Spacer(modifier = Modifier.width(4.dp))
-                // Verificando se birthDate é nulo e exibindo um valor padrão
                 Text(
                     text = birthDate ?: "Data de nascimento não informada",
                     style = Typography.bodySmall.copy(fontSize = 12.sp)
