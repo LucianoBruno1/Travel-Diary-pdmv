@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -28,10 +29,13 @@ import com.ifpe.traveldiarypdmv.ui.component.text_input.TravelDiaryTextField
 import com.ifpe.traveldiarypdmv.ui.theme.GreenBase
 import com.ifpe.traveldiarypdmv.ui.theme.Typography
 import com.ifpe.traveldiarypdmv.ui.component.button.TravelDiaryButton
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 @Composable
-fun ResetPasswordScreen(){
-    val password = remember { mutableStateOf("") }
+fun ResetPasswordScreen(email: String) {
+    var token by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier.fillMaxSize().background(color = Color.White)
@@ -50,7 +54,7 @@ fun ResetPasswordScreen(){
             verticalArrangement = Arrangement.Top
         ) {
             Text(
-                text = "REDEFINIR",
+                text = "INSIRA O TOKEN",
                 style = Typography.headlineLarge.copy(fontSize = 26.sp),
                 modifier = Modifier
                     .padding(bottom = 25.dp)
@@ -58,18 +62,18 @@ fun ResetPasswordScreen(){
                 fontWeight = FontWeight.Bold
             )
             TravelDiaryTextField(
-                value = password.value,
-                onValueChange = { password.value = it },
-                labelText = "Nova senha",
+                value = token,
+                onValueChange = { token = it },
+                labelText = "Token",
                 leadingIconPainter = painterResource(id = R.drawable.ic_lock),
                 leadingIconDescription = "Ícone de Email"
             )
             TravelDiaryTextField(
-                value = password.value,
-                onValueChange = { password.value = it },
-                labelText = "Confirmar senha",
+                value = password,
+                onValueChange = { password = it },
+                labelText = "Digite sua senha nova senha",
                 leadingIconPainter = painterResource(id = R.drawable.ic_lock),
-                leadingIconDescription = "Ícone de senha"
+                leadingIconDescription = "Ícone de Senha"
             )
             TravelDiaryButton(
                 modifier = Modifier.fillMaxWidth(),

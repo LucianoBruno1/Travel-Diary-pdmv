@@ -24,6 +24,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.ifpe.traveldiarypdmv.R
 import com.ifpe.traveldiarypdmv.ui.component.button.TravelDiaryButton
 import com.ifpe.traveldiarypdmv.ui.component.text_input.TravelDiaryTextField
@@ -31,17 +33,15 @@ import com.ifpe.traveldiarypdmv.ui.theme.GreenBase
 import com.ifpe.traveldiarypdmv.ui.theme.Typography
 
 @Composable
-fun RecoverPasswordScreen(
-
-){
-
+fun RecoverPasswordScreen(navController: NavController) {
     val email = remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier.fillMaxSize().background(color = Color.White)
     ) {
         Image(
-            painter = painterResource(id = R.drawable.recover_password_img), contentDescription = "Imagem de recuperação de senha",
+            painter = painterResource(id = R.drawable.recover_password_img),
+            contentDescription = "Imagem de recuperação de senha",
             modifier = Modifier.fillMaxWidth().heightIn(max = 300.dp).padding(bottom = 25.dp),
             contentScale = ContentScale.Crop
         )
@@ -80,7 +80,11 @@ fun RecoverPasswordScreen(
                 text = "Recuperar",
                 containerColor = GreenBase,
                 contentColor = Color.White,
-                onClick = {}
+                onClick = {
+                    if (email.value.isNotEmpty()) {
+                        navController.navigate("resetpassword/${email.value}")
+                    }
+                }
             )
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -88,5 +92,6 @@ fun RecoverPasswordScreen(
                 text = "Retornar",
                 textDecoration = TextDecoration.Underline
             )
+        }
     }
-}}
+}

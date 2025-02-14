@@ -31,6 +31,7 @@ import com.ifpe.traveldiarypdmv.ui.screen.profile.ProfileScreen
 import com.ifpe.traveldiarypdmv.ui.screen.recoverpassword.RecoverPasswordScreen
 import com.ifpe.traveldiarypdmv.ui.screen.register.RegisterScreen
 import com.ifpe.traveldiarypdmv.ui.screen.register.RegisterViewModel
+import com.ifpe.traveldiarypdmv.ui.screen.resetpassword.ResetPasswordScreen
 import com.ifpe.traveldiarypdmv.ui.screen.splash.SplashScreen
 import com.ifpe.traveldiarypdmv.ui.theme.TravelDiaryPDMVTheme
 
@@ -105,8 +106,9 @@ class MainActivity : ComponentActivity() {
 
                         // Recover Password Screen
                         composable(RecoverPassword.route) {
-                            RecoverPasswordScreen()
+                            RecoverPasswordScreen(navController)
                         }
+
 
 
                         composable(Home.route) {
@@ -148,9 +150,18 @@ class MainActivity : ComponentActivity() {
                         composable(BottomNavItem.Favorite.route) {
                             Text(text = "Tela de Favoritos em construção...", modifier = Modifier.padding(16.dp))
                         }
+                        // Reset Password Screen
+                        composable("resetpassword/{email}") { backStackEntry ->
+                            val email = backStackEntry.arguments?.getString("email")
+                            if (email != null) {
+                                ResetPasswordScreen(email)
+                            }
+                        }
+
+                    }
                     }
                 }
             }
         }
     }
-}
+
