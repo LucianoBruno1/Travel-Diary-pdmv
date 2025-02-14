@@ -35,3 +35,7 @@ data object Details {
 data object RecoverPassword {
     const val route = "recoverpassword"
 }
+@Serializable
+data object ResetPassword {
+    const val route = "resetpassword"
+}
