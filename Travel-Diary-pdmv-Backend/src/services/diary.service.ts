@@ -121,6 +121,11 @@ export class DiaryService {
         return this.toDiaryResponseDto(diary);
     }
 
+    async remove(id: string){
+        const diary = await this.diaryRepository.findById(id);
+        if (!diary) throw new NotFoundError(`Diário com o ID ${id} não encontrado`);
+        await this.diaryRepository.remove(id);
+    }
 
     private toDiaryResponseDto(diary: Diary): DiaryResponseDto {
         console.log("Fotos do Diário:", diary.photos); 

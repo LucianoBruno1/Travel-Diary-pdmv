@@ -51,4 +51,8 @@ export class DiaryRepository {
             relations: ['photos', 'user'],
         });
     }
+
+    async remove(id: string) {
+        return this.dataSource.getRepository(Diary).delete(id);
+    }
 }

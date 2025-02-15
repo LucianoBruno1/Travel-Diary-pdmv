@@ -14,7 +14,7 @@ export class Photo extends BaseEntity {
     @Column({ type: "double", nullable: true })
     longitude: number;
 
-    @ManyToOne(() => Diary, (diary) => diary.photos)
+    @ManyToOne(() => Diary, (diary) => diary.photos, { onDelete: "CASCADE" })
     @JoinColumn({ name: "diary_id" })
     diary: Diary;
 } 

@@ -10,5 +10,8 @@ diaryRoutes.get("/diaries/feed/:id", diaryController.getFeed.bind(diaryControlle
 diaryRoutes.get('/diaries/:id', ((req: Request, res: Response, next: NextFunction) => {
          authenticateJWT(req, res, next)
      }), diaryController.getDiaryDetails.bind(diaryController));
+diaryRoutes.delete('/diaries/:id', ((req: Request, res: Response, next: NextFunction) => {
+         authenticateJWT(req, res, next)
+     }), diaryController.remove.bind(diaryController));
 
 export default diaryRoutes;
