@@ -46,6 +46,7 @@ import androidx.navigation.navArgument
 import com.ifpe.traveldiarypdmv.data.network.ApiService
 import com.ifpe.traveldiarypdmv.data.repository.DiaryRepository
 import com.ifpe.traveldiarypdmv.ui.route.RecoverPassword
+import com.ifpe.traveldiarypdmv.ui.screen.settings.SettingsScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -100,6 +101,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
+
                         // Login Screen
                         composable(Login.route) {
                             LoginScreen(
@@ -123,6 +125,10 @@ class MainActivity : ComponentActivity() {
                         composable(RecoverPassword.route) {
                             RecoverPasswordScreen(navController)
                         }
+                        composable("settings") {
+                            SettingsScreen() // Substitua pelo nome real da sua tela de configurações
+                        }
+
 
 
 
@@ -155,7 +161,7 @@ class MainActivity : ComponentActivity() {
                         composable(BottomNavItem.Profile.route) {
                             val token = uiState.token ?: ""
                             if (userId.isNotBlank()) {
-                                ProfileScreen(userId = userId, token = token)
+                                ProfileScreen(userId = userId, token = token, navController = navController )
                             } else {
                                 Text(text = "Carregando Perfil...", modifier = Modifier.padding(16.dp))
                             }

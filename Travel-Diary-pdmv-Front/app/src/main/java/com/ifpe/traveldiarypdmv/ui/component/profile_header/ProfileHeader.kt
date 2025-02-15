@@ -1,6 +1,5 @@
 package com.ifpe.traveldiarypdmv.ui.component.profile_header
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -25,12 +24,17 @@ import com.ifpe.traveldiarypdmv.ui.theme.GreenBase
 import com.ifpe.traveldiarypdmv.ui.theme.Typography
 
 @Composable
-fun ProfileHeader(profilePicture: String?, name: String, birthDate: String?) {
+fun ProfileHeader(
+    profilePicture: String?,
+    name: String,
+    birthDate: String?,
+    onSettingsClick: () -> Unit // Adicionando callback para navegação
+) {
     Row(
         modifier = Modifier
             .background(Color.White)
     ) {
-        Column() {
+        Column {
             Column(
                 modifier = Modifier
                     .clip(RoundedCornerShape(150.dp))
@@ -71,9 +75,7 @@ fun ProfileHeader(profilePicture: String?, name: String, birthDate: String?) {
                 Spacer(modifier = Modifier.weight(1f))
                 IconButton(
                     modifier = Modifier.padding(16.dp),
-                    onClick = {
-                        Log.d("IconButton", "Botão de configurações clicado!")
-                    },
+                    onClick = { onSettingsClick() }, // Chamando o callback ao clicar na engrenagem
                 ) {
                     Icon(
                         imageVector = Icons.Default.Settings,
@@ -104,5 +106,7 @@ fun ProfileHeader(profilePicture: String?, name: String, birthDate: String?) {
 @Preview
 @Composable
 private fun ProfileHeaderPreview() {
-    ProfileHeader(null , "Eduardo", "22/01/1998")
+    ProfileHeader(null, "Eduardo", "22/01/1998") {
+        // Simulação de clique na engrenagem
+    }
 }
