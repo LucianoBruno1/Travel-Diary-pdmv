@@ -149,7 +149,7 @@ class MainActivity : ComponentActivity() {
                         ) { backStackEntry ->
                             val token = uiState.token ?: ""
                             val diaryId = backStackEntry.arguments?.getString("diaryId") ?: ""
-                            DetailsScreen(navController = navController, diaryId = diaryId, token = token)
+                            DetailsScreen(navController = navController, diaryId = diaryId, token = token, userId = userId)
                         }
 
                         composable(BottomNavItem.Profile.route) {

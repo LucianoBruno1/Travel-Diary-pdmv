@@ -1,5 +1,8 @@
 package com.ifpe.traveldiarypdmv.ui.screen.details
 
+import android.R.id
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,6 +18,27 @@ class DetailsViewModel : ViewModel() {
     fun onEvent(event: DetailsUiEvent) {
         when (event) {
             is DetailsUiEvent.LoadDiary -> loadDiary(event.diaryId, event.token)
+            is DetailsUiEvent.UploadPhotos -> uploadPhotos(event.userId, event.diaryId, event.photos, event.context)
+        }
+    }
+
+    private fun uploadPhotos(userId: String, diaryId: String, photos: List<Uri>, context: Context) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isUploading = true)
+            try {
+                val result = TravelDiaryRemoteDataSource.uploadPhotos(userId, diaryId, photos, context)
+
+                if (result.isSuccess) {
+                    _uiState.value = _uiState.value.copy(
+                        images = _uiState.value.images + photos.map { it.toString() }, // Aqui você pode atualizar com URLs reais se necessário
+                        isUploading = false
+                    )
+                } else {
+                    throw Exception("Falha ao fazer upload das imagens")
+                }
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(isUploading = false, errorMessage = e.message)
+            }
         }
     }
 
@@ -27,6 +51,7 @@ class DetailsViewModel : ViewModel() {
                 result.onSuccess { response ->
                     val images = response.photos.map { fixImageUrl(it.file_path) }
                     _uiState.value = _uiState.value.copy(
+                        id = response.id,
                         name = response.name,
                         description = response.description ?: "",
                         city = response.city,

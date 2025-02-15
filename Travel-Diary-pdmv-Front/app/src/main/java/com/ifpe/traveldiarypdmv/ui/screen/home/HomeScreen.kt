@@ -68,12 +68,6 @@ fun HomeScreen(
                 )
             }
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(onClick = { onLogout() }) {
-            Text(text = "Logout", fontSize = 16.sp)
-        }
     }
 }
 

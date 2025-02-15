@@ -1,9 +1,10 @@
 package com.ifpe.traveldiarypdmv.ui.screen.details
 
 import android.content.res.Configuration
+import android.net.Uri
 import android.util.Log
-import android.widget.Toast
-import androidx.compose.foundation.Image
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -17,11 +18,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -31,10 +30,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -45,7 +44,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -59,20 +57,14 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
-import coil3.compose.rememberAsyncImagePainter
-import coil3.request.ImageRequest
-import coil3.request.crossfade
-import com.ifpe.traveldiarypdmv.R
 import com.ifpe.traveldiarypdmv.ui.component.dropdown_menu.TravelDiaryDropdownMenu
 import com.ifpe.traveldiarypdmv.ui.theme.Gray200
 import com.ifpe.traveldiarypdmv.ui.theme.GreenBase
@@ -84,18 +76,30 @@ fun DetailsScreen(
     viewModel: DetailsViewModel = viewModel(),
     diaryId: String,
     token: String,
+    userId: String,
     navController: NavController,
 ) {
     val uiState by viewModel.uiState.collectAsState()
-
-    LaunchedEffect(Unit) {
-        viewModel.onEvent(DetailsUiEvent.LoadDiary(diaryId, token))
-    }
 
     var menuExpanded by remember { mutableStateOf(false) } // Controle do menu
     var currentImageIndex by remember { mutableStateOf(0) } // Índice da imagem atual
 
     var selectedImageUrl by remember { mutableStateOf<String?>(null) }
+
+    var showPhotoDialog by remember { mutableStateOf(false) }
+    var selectedPhotos by remember { mutableStateOf<List<Uri>>(emptyList()) }
+
+    LaunchedEffect(Unit) {
+        viewModel.onEvent(DetailsUiEvent.LoadDiary(diaryId, token))
+    }
+
+    val context = LocalContext.current
+
+    LaunchedEffect(selectedPhotos) {
+        if (selectedPhotos.isNotEmpty()) {
+            viewModel.onEvent(DetailsUiEvent.UploadPhotos(userId, diaryId, selectedPhotos, context))
+        }
+    }
 
     if (uiState.isLoading) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -159,8 +163,23 @@ fun DetailsScreen(
                             menuExpanded = false
                             println("Excluir Diário Selecionado")
                         },
-                        modifier = Modifier.align(Alignment.TopEnd) // Alinhando ao lado direito
+                        onAddPhotosClick = {
+                            menuExpanded = false
+                            showPhotoDialog = true
+                        },
+                        modifier = Modifier.align(Alignment.TopEnd)
                     )
+
+                    if (showPhotoDialog) {
+                        PhotoUploadDialog(
+                            onDismiss = { showPhotoDialog = false },
+                            onPhotosSelected = { uris ->
+                                selectedPhotos = uris
+                                showPhotoDialog = false
+                            }
+                        )
+                    }
+
                 }
             }
 
@@ -387,4 +406,40 @@ fun FullscreenImageViewer(imageUrl: String, onClose: () -> Unit) {
     }
 }
 
+@Composable
+fun PhotoUploadDialog(
+    onDismiss: () -> Unit,
+    onPhotosSelected: (List<Uri>) -> Unit
+) {
+    val context = LocalContext.current
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetMultipleContents()
+    ) { uris ->
+        if (uris.isNotEmpty()) {
+            onPhotosSelected(uris)
+        }
+    }
 
+    Dialog(onDismissRequest = onDismiss) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.White, shape = RoundedCornerShape(16.dp))
+                .padding(16.dp)
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text("Adicionar Fotos", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Button(onClick = { launcher.launch("image/*") }) {
+                    Text("Selecionar Fotos")
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(onClick = onDismiss, colors = ButtonDefaults.buttonColors(Color.Red)) {
+                    Text("Cancelar")
+                }
+            }
+        }
+    }
+}

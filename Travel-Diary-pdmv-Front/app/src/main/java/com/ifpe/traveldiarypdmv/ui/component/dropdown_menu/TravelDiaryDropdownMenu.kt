@@ -12,7 +12,8 @@ fun TravelDiaryDropdownMenu(
     expanded: Boolean,                     // Recebe o estado de visibilidade
     onDismissRequest: () -> Unit,         // Controla o fechamento do menu
     onEditClick: () -> Unit,              // Ação para editar
-    onDeleteClick: () -> Unit             // Ação para excluir
+    onDeleteClick: () -> Unit,
+    onAddPhotosClick: () -> Unit
     ) {
 
     // DropdownMenu para exibir as opções
@@ -36,6 +37,14 @@ fun TravelDiaryDropdownMenu(
             onClick = {
                 onDismissRequest()
                 onDeleteClick()
+            }
+        )
+
+        DropdownMenuItem(
+            text = { Text("Adicionar Fotos") },
+            onClick = {
+                onDismissRequest()
+                onAddPhotosClick()
             }
         )
     }
