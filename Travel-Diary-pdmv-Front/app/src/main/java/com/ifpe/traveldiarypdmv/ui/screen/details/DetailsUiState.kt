@@ -9,5 +9,6 @@ data class DetailsUiState(
     val images: List<String> = emptyList(),
     val isLoading: Boolean = false,
     val isUploading: Boolean = false,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val isDeleted: Boolean = false
 )

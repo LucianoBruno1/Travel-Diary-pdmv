@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.ifpe.traveldiarypdmv.core.network.TravelDiaryRemoteDataSource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class DetailsViewModel : ViewModel() {
@@ -19,6 +20,39 @@ class DetailsViewModel : ViewModel() {
         when (event) {
             is DetailsUiEvent.LoadDiary -> loadDiary(event.diaryId, event.token)
             is DetailsUiEvent.UploadPhotos -> uploadPhotos(event.userId, event.diaryId, event.photos, event.context)
+            is DetailsUiEvent.DeleteDiary -> deleteDiary(event.diaryId, event.token)
+        }
+    }
+
+//    private fun deleteDiary(diaryId: String, token: String) {
+//        viewModelScope.launch {
+//            try {
+//                val result = TravelDiaryRemoteDataSource.deleteDiary(diaryId, token)
+//                if (result.isSuccess) {
+//                    _uiState.value = _uiState.value.copy(isDeleted = true)
+//                } else {
+//                    throw Exception("Erro ao deletar diário")
+//                }
+//            } catch (e: Exception) {
+//                _uiState.value = _uiState.value.copy(errorMessage = e.message)
+//            }
+//        }
+//    }
+
+    private fun deleteDiary(diaryId: String, token: String) {
+        viewModelScope.launch {
+            try {
+                _uiState.update { it.copy(isDeleted = false, isLoading = true) }
+
+                val result = TravelDiaryRemoteDataSource.deleteDiary(diaryId, token)
+                if (result.isSuccess) {
+                   _uiState.update { it.copy(isDeleted = true, isLoading = false) }
+                } else {
+                    throw Exception("Erro ao deletar diário")
+                }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(isLoading = false, errorMessage = "Erro ao deletar diário") }
+            }
         }
     }
 
@@ -71,5 +105,9 @@ class DetailsViewModel : ViewModel() {
 
     private fun fixImageUrl(filePath: String): String {
         return filePath.replace("http://localhost", "http://10.0.2.2")
+    }
+
+    fun resetDeleteState() {
+        _uiState.update { it.copy(isDeleted = false) }
     }
 }

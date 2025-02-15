@@ -187,4 +187,26 @@ object TravelDiaryRemoteDataSource {
             Result.failure(Exception("Erro ao enviar fotos: ${e.message}"))
         }
     }
+
+    suspend fun deleteDiary(diaryId: String, token: String): Result<Unit> {
+        return try {
+            val response = httpClientAndroid.delete("$BASE_URL/v1/api/diaries/$diaryId") {
+                headers {
+                    append("Authorization", "Bearer $token")
+                }
+                contentType(ContentType.Application.Json)
+            }
+
+            if (response.status.isSuccess()) {
+                Result.success(Unit)
+            } else {
+                val errorBodyText = response.bodyAsText()
+                val jsonObject = JSONObject(errorBodyText)
+                val errorMessage = jsonObject.optString("message", "Erro ao deletar diário")
+                Result.failure(Exception(errorMessage))
+            }
+        } catch (e: Exception) {
+            Result.failure(Exception("Erro ao deletar diário}"))
+        }
+    }
 }

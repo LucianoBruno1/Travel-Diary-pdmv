@@ -65,6 +65,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
+import com.ifpe.traveldiarypdmv.ui.component.dialog_delete.DeleteDiaryDialog
 import com.ifpe.traveldiarypdmv.ui.component.dropdown_menu.TravelDiaryDropdownMenu
 import com.ifpe.traveldiarypdmv.ui.theme.Gray200
 import com.ifpe.traveldiarypdmv.ui.theme.GreenBase
@@ -89,6 +90,8 @@ fun DetailsScreen(
     var showPhotoDialog by remember { mutableStateOf(false) }
     var selectedPhotos by remember { mutableStateOf<List<Uri>>(emptyList()) }
 
+    var showDeleteDialog by remember { mutableStateOf(false) }
+
     LaunchedEffect(Unit) {
         viewModel.onEvent(DetailsUiEvent.LoadDiary(diaryId, token))
     }
@@ -98,6 +101,15 @@ fun DetailsScreen(
     LaunchedEffect(selectedPhotos) {
         if (selectedPhotos.isNotEmpty()) {
             viewModel.onEvent(DetailsUiEvent.UploadPhotos(userId, diaryId, selectedPhotos, context))
+        }
+    }
+
+    LaunchedEffect(uiState.isDeleted) {
+        if (uiState.isDeleted) {
+            navController.navigate("home") {
+                popUpTo("home") { inclusive = true }
+            }
+            viewModel.resetDeleteState()
         }
     }
 
@@ -161,7 +173,7 @@ fun DetailsScreen(
                         },
                         onDeleteClick = {
                             menuExpanded = false
-                            println("Excluir Diário Selecionado")
+                            showDeleteDialog = true
                         },
                         onAddPhotosClick = {
                             menuExpanded = false
@@ -176,6 +188,17 @@ fun DetailsScreen(
                             onPhotosSelected = { uris ->
                                 selectedPhotos = uris
                                 showPhotoDialog = false
+                            }
+                        )
+                    }
+
+                    // Exibe o diálogo de confirmação
+                    if (showDeleteDialog) {
+                        DeleteDiaryDialog(
+                            onDismiss = { showDeleteDialog = false },
+                            onConfirm = {
+                                viewModel.onEvent(DetailsUiEvent.DeleteDiary(diaryId, token))
+                                showDeleteDialog = false
                             }
                         )
                     }
