@@ -154,7 +154,7 @@ class MainActivity : ComponentActivity() {
                         composable("resetpassword/{email}") { backStackEntry ->
                             val email = backStackEntry.arguments?.getString("email")
                             if (email != null) {
-                                ResetPasswordScreen(email)
+                                ResetPasswordScreen(navController, email) // ✅ Agora está correto
                             }
                         }
 
