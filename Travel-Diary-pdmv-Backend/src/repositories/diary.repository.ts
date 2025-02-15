@@ -48,7 +48,11 @@ export class DiaryRepository {
         const diaryRepository = this.dataSource.getRepository(Diary);
         return await diaryRepository.findOne({
             where: { id: diaryId },
-            relations: ['photos'], // Inclui as fotos associadas
+            relations: ['photos', 'user'],
         });
+    }
+
+    async remove(id: string) {
+        return this.dataSource.getRepository(Diary).delete(id);
     }
 }

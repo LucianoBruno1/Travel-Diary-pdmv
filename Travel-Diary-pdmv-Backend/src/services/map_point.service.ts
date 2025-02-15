@@ -1,5 +1,4 @@
 import { MapPointRepository } from "../repositories/map_point.repository";
-import { NotFoundError } from "../helpers/api-erros";
 import { MapPointResponseDto } from "../dtos/map_point/map_point.dto";
 import { MapPoint } from "../models/map_point.model";
 import { User } from "../models/user.model";
@@ -14,10 +13,6 @@ export class MapPointService {
 
     async getMapPointsByUser(userId: string): Promise<MapPointResponseDto[]> {
         const mapPoints = await this.mapPointRepository.findByUser(userId);
-
-        if (!mapPoints.length) {
-            throw new NotFoundError(`Nenhum ponto encontrado para o usuário com ID ${userId}.`);
-        }
 
         return mapPoints.map((point) => ({
             id: point.id,

@@ -11,8 +11,8 @@ export class MapPoint extends BaseEntity {
 
     @Column({ type: "double" })
     longitude: number;
-
-    @ManyToOne(() => Diary)
+    
+    @ManyToOne(() => Diary, (diary) => diary.mapPoints, { onDelete: "CASCADE" })
     @JoinColumn({ name: "diary_id" })
     diary: Diary;
 

@@ -16,11 +16,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.ifpe.traveldiarypdmv.data.network.ApiService
-import com.ifpe.traveldiarypdmv.data.repository.DiaryRepository
 import com.ifpe.traveldiarypdmv.ui.component.bottom_navigation.BottomNavItem
 import com.ifpe.traveldiarypdmv.ui.component.bottom_navigation.BottomNavigationBar
-import com.ifpe.traveldiarypdmv.ui.route.*
+import com.ifpe.traveldiarypdmv.ui.route.Details
+import com.ifpe.traveldiarypdmv.ui.route.Home
+import com.ifpe.traveldiarypdmv.ui.route.Login
+import com.ifpe.traveldiarypdmv.ui.route.Register
+import com.ifpe.traveldiarypdmv.ui.route.Splash
 import com.ifpe.traveldiarypdmv.ui.screen.details.DetailsScreen
 import com.ifpe.traveldiarypdmv.ui.screen.home.HomeScreen
 import com.ifpe.traveldiarypdmv.ui.screen.login.LoginScreen
@@ -34,6 +36,17 @@ import com.ifpe.traveldiarypdmv.ui.screen.register.RegisterViewModel
 import com.ifpe.traveldiarypdmv.ui.screen.resetpassword.ResetPasswordScreen
 import com.ifpe.traveldiarypdmv.ui.screen.splash.SplashScreen
 import com.ifpe.traveldiarypdmv.ui.theme.TravelDiaryPDMVTheme
+import android.Manifest
+import android.content.pm.PackageManager
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
+import com.ifpe.traveldiarypdmv.data.network.ApiService
+import com.ifpe.traveldiarypdmv.data.repository.DiaryRepository
+import com.ifpe.traveldiarypdmv.ui.route.RecoverPassword
+
 
 class MainActivity : ComponentActivity() {
     private val viewModelLogin: LoginViewModel by viewModels()
@@ -42,6 +55,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        requestLocationPermission() // Solicita a permissão ao iniciar
+
         setContent {
             TravelDiaryPDMVTheme {
                 val navController = rememberNavController()
@@ -121,21 +136,31 @@ class MainActivity : ComponentActivity() {
                                         popUpTo(0) { inclusive = true }
                                     }
                                 },
-                                onNavigateToDetails = {
-                                    navController.navigate(Details.route)
+                                onNavigateToDetails = { diaryId ->
+                                    navController.navigate("details/$diaryId")
                                 }
                             )
                         }
 
                         // Details Screen
-                        composable(Details.route) {
-                            DetailsScreen(navController = navController)
+                        composable(
+                            route = "${Details.route}/{diaryId}",
+                            arguments = listOf(navArgument("diaryId") { type = NavType.StringType })
+                        ) { backStackEntry ->
+                            val token = uiState.token ?: ""
+                            val diaryId = backStackEntry.arguments?.getString("diaryId") ?: ""
+                            DetailsScreen(navController = navController, diaryId = diaryId, token = token, userId = userId)
                         }
 
-                        // Profile Screen
                         composable(BottomNavItem.Profile.route) {
-                            ProfileScreen()
+                            val token = uiState.token ?: ""
+                            if (userId.isNotBlank()) {
+                                ProfileScreen(userId = userId, token = token)
+                            } else {
+                                Text(text = "Carregando Perfil...", modifier = Modifier.padding(16.dp))
+                            }
                         }
+
 
                         // Map Screen
                         composable(BottomNavItem.Map.route) {
@@ -159,9 +184,27 @@ class MainActivity : ComponentActivity() {
                         }
 
                     }
-                    }
                 }
             }
         }
     }
+    private fun requestLocationPermission() {
+        val permissions = arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
 
+        val allPermissionsGranted = permissions.all {
+            ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
+        }
+
+        if (!allPermissionsGranted) {
+            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+                val granted = permissions.entries.all { it.value }
+                if (!granted) {
+                    Toast.makeText(this, "Permissão de localização necessária", Toast.LENGTH_SHORT).show()
+                }
+            }.launch(permissions)
+        }
+    }
+}

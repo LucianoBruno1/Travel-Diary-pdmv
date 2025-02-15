@@ -34,4 +34,12 @@ export class DiaryController extends BaseController<DiaryService> {
             201
         );
     }
+
+    async remove(req: Request, res: Response, next: NextFunction) {
+        const id = req.params.id;
+        return this.handleRequest(req, res, next, async () => {
+            await this.service.remove(id);
+        }, "Diário removido com sucesso", 200);
+    }
+
 }

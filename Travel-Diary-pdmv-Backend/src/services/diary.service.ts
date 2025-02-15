@@ -5,6 +5,11 @@ import { DiaryRepository } from "../repositories/diary.repository";
 import { UserRepository } from "../repositories/user.repository";
 import { GeocodingService } from "./geocoding.service";
 import { MapPointService } from "./map_point.service";
+import { config } from "dotenv";
+
+config();
+
+const BASE_URL = process.env.BASE_URL || "http://localhost:3001";
 
 export class DiaryService {
     private diaryRepository: DiaryRepository;
@@ -19,14 +24,14 @@ export class DiaryService {
         this.geocodingService = new GeocodingService(process.env.GEOCODING_API_KEY);
     }
 
-    async getDiaryWithPhotos(diaryId: string): Promise<Diary> {
+    async getDiaryWithPhotos(diaryId: string): Promise<DiaryResponseDto> {
         const diary = await this.diaryRepository.findDiaryWithPhotos(diaryId);
     
         if (!diary) {
             throw new NotFoundError(`Diário com ID ${diaryId} não foi encontrado.`);
         }
     
-        return diary;
+        return this.toDiaryResponseDto(diary);
     }
 
      /**
@@ -116,31 +121,28 @@ export class DiaryService {
         return this.toDiaryResponseDto(diary);
     }
 
+    async remove(id: string){
+        const diary = await this.diaryRepository.findById(id);
+        if (!diary) throw new NotFoundError(`Diário com o ID ${id} não encontrado`);
+        await this.diaryRepository.remove(id);
+    }
 
     private toDiaryResponseDto(diary: Diary): DiaryResponseDto {
-        const { id = null,
-            name = null,
-            description = null,
-            travel_date = null,
-            city = null,
-            state = null,
-            latitude = null,
-            longitude = null, user, photos = [] } = diary;
-
+        console.log("Fotos do Diário:", diary.photos); 
         return {
-            id,
-            name,
-            description,
-            travel_date,
-            city,
-            state,
-            latitude,
-            longitude,
-            user: { id: user.id },
-            photos: Array.isArray(photos) ? photos.map((photo) => ({
-                id: photo.id || null,
-                file_path: photo.file_path || null,
-            })) : [],
+            id: diary.id,
+            name: diary.name,
+            description: diary.description,
+            travel_date: diary.travel_date,
+            city: diary.city,
+            state: diary.state,
+            latitude: diary.latitude,
+            longitude: diary.longitude,
+            user: diary.user ? { id: diary.user.id } : null, 
+            photos: diary.photos?.map(photo => ({
+                id: photo?.id || 'ID Desconhecido',
+                file_path: photo?.file_path ? `${BASE_URL}${photo.file_path.replace(/\\/g, '/')}` : null,
+            })) || [],
         };
     }
 }
