@@ -81,7 +81,8 @@ class MainActivity : ComponentActivity() {
                                 BottomNavItem.Profile.route
                             )
                         ) {
-                            BottomNavigationBar(navController = navController)
+                            BottomNavigationBar(navController = navController) { }
+
                         }
                     }
                 ) { padding ->
