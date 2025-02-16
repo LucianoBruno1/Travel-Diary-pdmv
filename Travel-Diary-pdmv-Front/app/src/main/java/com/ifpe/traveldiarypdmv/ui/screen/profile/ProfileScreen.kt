@@ -1,17 +1,29 @@
 package com.ifpe.traveldiarypdmv.ui.screen.profile
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.ifpe.traveldiarypdmv.ui.component.button.TravelDiaryButton
 import com.ifpe.traveldiarypdmv.ui.component.profile_header.ProfileHeader
 import com.ifpe.traveldiarypdmv.ui.component.screen_header.ScreenHeader
@@ -22,14 +34,12 @@ fun ProfileScreen(
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = viewModel(),
     userId: String,
-    token: String,
-    navController: NavController
+    token: String
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    var biography by remember { mutableStateOf(uiState.bio ?: "Conte-nos sobre você...") }
+    var biography by remember(uiState.bio) { mutableStateOf(uiState.bio ?: "Conte-nos sobre você...") }
 
-    // Carregar perfil quando userId ou token mudar
-    LaunchedEffect(userId, token) {
+    LaunchedEffect(Unit) {
         viewModel.onEvent(ProfileUiEvent.LoadProfile(userId, token))
     }
 
@@ -38,8 +48,11 @@ fun ProfileScreen(
             .fillMaxSize()
             .background(Color.White)
     ) {
+
         ScreenHeader("Perfil de Usuário")
+
         Spacer(modifier = Modifier.height(16.dp))
+
 
         Box(
             modifier = Modifier
@@ -49,17 +62,12 @@ fun ProfileScreen(
                 .background(Color.White)
                 .padding(20.dp)
         ) {
-            ProfileHeader(
-                profilePicture = uiState.profilePicture,
-                name = uiState.name,
-                birthDate = uiState.birthDate,
-                onSettingsClick = { navController.navigate("settings") } // Navegar para configurações
-            )
+            ProfileHeader(profilePicture = uiState.profilePicture, name = uiState.name, birthDate = uiState.birthDate)
         }
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Linha divisória
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -87,17 +95,13 @@ fun ProfileScreen(
                 maxLines = 10,
                 singleLine = false,
             )
-
             Spacer(modifier = Modifier.height(20.dp))
-
             TravelDiaryButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = "Salvar",
                 containerColor = GreenBase,
                 contentColor = Color.White,
-                onClick = {
-
-                }
+                onClick = {}
             )
         }
     }

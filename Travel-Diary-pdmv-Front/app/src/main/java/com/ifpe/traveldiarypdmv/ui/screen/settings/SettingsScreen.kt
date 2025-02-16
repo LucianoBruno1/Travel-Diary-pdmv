@@ -1,6 +1,12 @@
 package com.ifpe.traveldiarypdmv.ui.screen.settings
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -10,12 +16,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ifpe.traveldiarypdmv.ui.component.button.TravelDiaryButton
-import com.ifpe.traveldiarypdmv.ui.theme.GreenBase
 
 @Composable
 fun SettingsScreen() {
@@ -27,45 +30,34 @@ fun SettingsScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.SpaceBetween
+            .padding(16.dp)
     ) {
-        Column {
-            Text(text = "Configurações", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+        Text(text = "Configurações", fontSize = 24.sp, fontWeight = FontWeight.Bold)
 
-            Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-            SettingItem(
-                title = "Notificações",
-                checked = notificationsEnabled,
-                onCheckedChange = { notificationsEnabled = it }
-            )
+        SettingItem(
+            title = "Notificações",
+            checked = notificationsEnabled,
+            onCheckedChange = { notificationsEnabled = it }
+        )
 
-            SettingItem(
-                title = "Permitir Geolocalização",
-                checked = locationEnabled,
-                onCheckedChange = { locationEnabled = it }
-            )
+        SettingItem(
+            title = "Permitir Geolocalização",
+            checked = locationEnabled,
+            onCheckedChange = { locationEnabled = it }
+        )
 
-            SettingItem(
-                title = "Permitir Acesso à Câmera",
-                checked = cameraEnabled,
-                onCheckedChange = { cameraEnabled = it }
-            )
+        SettingItem(
+            title = "Permitir Acesso à Câmera",
+            checked = cameraEnabled,
+            onCheckedChange = { cameraEnabled = it }
+        )
 
-            SettingItem(
-                title = "Modo Escuro",
-                checked = darkModeEnabled,
-                onCheckedChange = { darkModeEnabled = it }
-            )
-        }
-
-        TravelDiaryButton(
-            modifier = Modifier.fillMaxWidth(),
-            text = "Logout",
-            containerColor = GreenBase,
-            contentColor = Color.White,
-            onClick = {}
+        SettingItem(
+            title = "Modo Escuro",
+            checked = darkModeEnabled,
+            onCheckedChange = { darkModeEnabled = it }
         )
     }
 }

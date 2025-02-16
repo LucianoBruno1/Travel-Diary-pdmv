@@ -48,11 +48,7 @@ import com.ifpe.traveldiarypdmv.data.network.ApiService
 import com.ifpe.traveldiarypdmv.data.repository.DiaryRepository
 import com.ifpe.traveldiarypdmv.ui.route.Camera
 import com.ifpe.traveldiarypdmv.ui.route.RecoverPassword
-<<<<<<< HEAD
-import com.ifpe.traveldiarypdmv.ui.screen.settings.SettingsScreen
-=======
 import com.ifpe.traveldiarypdmv.ui.screen.camera.CameraScreen
->>>>>>> a6f0088 (feat: add camera, criar diario por foto e adicionar foto em diario existente)
 
 
 class MainActivity : ComponentActivity() {
@@ -87,12 +83,10 @@ class MainActivity : ComponentActivity() {
                                 BottomNavItem.Profile.route
                             )
                         ) {
-
                             BottomNavigationBar(navController = navController,  onCameraClick = {
                                 navController.navigate(Camera.route)
                             }
                             )
-
                         }
                     }
                 ) { padding ->
@@ -111,7 +105,6 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         }
-
 
                         // Login Screen
                         composable(Login.route) {
@@ -136,10 +129,6 @@ class MainActivity : ComponentActivity() {
                         composable(RecoverPassword.route) {
                             RecoverPasswordScreen(navController)
                         }
-                        composable("settings") {
-                            SettingsScreen() // Substitua pelo nome real da sua tela de configurações
-                        }
-
 
 
 
@@ -180,7 +169,7 @@ class MainActivity : ComponentActivity() {
                         composable(BottomNavItem.Profile.route) {
                             val token = uiState.token ?: ""
                             if (userId.isNotBlank()) {
-                                ProfileScreen(userId = userId, token = token, navController = navController )
+                                ProfileScreen(userId = userId, token = token)
                             } else {
                                 Text(text = "Carregando Perfil...", modifier = Modifier.padding(16.dp))
                             }
