@@ -68,6 +68,7 @@ export class DiaryService {
         diary.travel_date = new Date();
         const savedDiary = await this.diaryRepository.save(diary);
 
+        console.log("Chamando mapPointService.create para o diário:", savedDiary.id);
         await this.mapPointService.create(latitude, longitude, user, savedDiary);
 
         return savedDiary;

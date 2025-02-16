@@ -35,6 +35,6 @@ export class Diary extends BaseEntity {
     @OneToMany(() => Photo, (photo) => photo.diary, { cascade: true })
     photos: Photo[];
 
-    @OneToMany(() => MapPoint, (mapPoint) => mapPoint.diary, { cascade: ["remove"] })
+    @OneToMany(() => MapPoint, (mapPoint) => mapPoint.diary, { cascade: ["insert", "remove"] })
     mapPoints: MapPoint[];
 }

@@ -9,25 +9,19 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.dp
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.maps.android.compose.rememberCameraPositionState
-import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
-import kotlinx.coroutines.launch
+import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.math.roundToInt
 
 @Composable
 fun TravelDiaryGoogleMap(
@@ -49,14 +43,6 @@ fun TravelDiaryGoogleMap(
         cameraPositionState = cameraPositionState,
         uiSettings = MapUiSettings(zoomControlsEnabled = true)
     ) {
-        // Marcador da localização do usuário (se disponível)
-        userLocation?.let { location ->
-            Marker(
-                state = MarkerState(position = location),
-                icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)
-            )
-        }
-
         // Adicionando os marcadores passados como parâmetro
         markerLocations.forEach { location ->
             Marker(

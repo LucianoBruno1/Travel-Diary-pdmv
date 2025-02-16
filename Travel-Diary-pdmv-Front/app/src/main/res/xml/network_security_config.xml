@@ -2,8 +2,14 @@
 <network-security-config>
 
     <domain-config cleartextTrafficPermitted="true">
+        <!-- Permite tráfego HTTP para localhost e rede local -->
         <domain includeSubdomains="true">10.0.2.2</domain>
         <domain includeSubdomains="true">192.168.56.1</domain>
+
+        <!-- Permite tráfego HTTP para os servidores do Google -->
+        <domain includeSubdomains="true">google.com</domain>
+        <domain includeSubdomains="true">maps.googleapis.com</domain>
+        <domain includeSubdomains="true">mt.googleapis.com</domain>
     </domain-config>
 
 </network-security-config>

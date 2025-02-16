@@ -1,6 +1,7 @@
 import { DataSource } from "typeorm";
 import { AppDataSource } from "../database/data-source";
 import { MapPoint } from "../models/map_point.model";
+import { BadRequestError } from "../helpers/api-erros";
 
 export class MapPointRepository {
     private dataSource: DataSource;
@@ -12,6 +13,7 @@ export class MapPointRepository {
     async save(pointData: Partial<MapPoint>): Promise<MapPoint> {
         const mapPointRepository = this.dataSource.getRepository(MapPoint);
         const mapPoint = mapPointRepository.create(pointData);
+        if (!mapPoint) throw new BadRequestError("Erro ao carregar MapPoint.");
         return await mapPointRepository.save(mapPoint);
     }
 

@@ -23,9 +23,22 @@ export class MapPointService {
     }
 
     async create(latitude: number, longitude: number, user: User, diary: Diary): Promise<MapPoint> {
-        const mapPoint = new MapPoint();
-        Object.assign(mapPoint, { latitude, longitude, user, diary });
-
-        return await this.mapPointRepository.save(mapPoint);
+        try {
+            const mapPoint = new MapPoint();
+            mapPoint.latitude = latitude;
+            mapPoint.longitude = longitude;
+            mapPoint.user = user;
+            mapPoint.diary = diary;
+    
+            console.log("Tentando salvar MapPoint:", mapPoint);
+    
+            const savedMapPoint = await this.mapPointRepository.save(mapPoint);
+            
+            console.log("MapPoint salvo com sucesso:", savedMapPoint);
+            return savedMapPoint;
+        } catch (error) {
+            console.error("Erro ao salvar MapPoint:", error);
+            throw error;
+        }
     }
 }
