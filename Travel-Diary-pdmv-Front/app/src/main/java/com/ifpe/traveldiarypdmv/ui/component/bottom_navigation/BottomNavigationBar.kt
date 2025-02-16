@@ -1,13 +1,12 @@
 package com.ifpe.traveldiarypdmv.ui.component.bottom_navigation
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -23,19 +22,19 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.ifpe.traveldiarypdmv.ui.theme.GreenBase
-import com.ifpe.traveldiarypdmv.ui.theme.GreenLight
 import com.ifpe.traveldiarypdmv.ui.theme.Typography
 
 sealed class BottomNavItem(val route: String, val icon: ImageVector, val title: String) {
     object Home : BottomNavItem("home", Icons.Default.Home, "Home")
     object Map : BottomNavItem("map", Icons.Default.LocationOn, "Map")
+    object Camera : BottomNavItem("camera", Icons.Default.AddCircle, "Camera")
     object Favorite : BottomNavItem("favorite", Icons.Default.Favorite, "Favorite")
     object Profile : BottomNavItem("profile", Icons.Default.Person, "Profile")
 }
 
 @Composable
-fun BottomNavigationBar(navController: NavController) {
-    val items = listOf(BottomNavItem.Home, BottomNavItem.Map, BottomNavItem.Favorite, BottomNavItem.Profile)
+fun BottomNavigationBar(navController: NavController, onCameraClick: () -> Unit) {
+    val items = listOf(BottomNavItem.Home, BottomNavItem.Map, BottomNavItem.Camera, BottomNavItem.Favorite, BottomNavItem.Profile)
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
@@ -64,7 +63,9 @@ fun BottomNavigationBar(navController: NavController) {
                 },
                 selected = selected,
                 onClick = {
-                    if (currentRoute != item.route) {
+                    if (item.route == BottomNavItem.Camera.route) { // Corrigindo a verificação da rota
+                        onCameraClick()
+                    } else if (currentRoute != item.route) {
                         navController.navigate(item.route) {
                             popUpTo(navController.graph.startDestinationId) { saveState = true }
                             launchSingleTop = true
@@ -81,5 +82,9 @@ fun BottomNavigationBar(navController: NavController) {
 @Composable
 private fun BottomNavigationBarPreview() {
     val navController = rememberNavController()
-    BottomNavigationBar(navController = navController)
+    @Suppress("UNREACHABLE_CODE")
+    BottomNavigationBar(
+        navController = navController,
+        onCameraClick = TODO(),
+    )
 }
