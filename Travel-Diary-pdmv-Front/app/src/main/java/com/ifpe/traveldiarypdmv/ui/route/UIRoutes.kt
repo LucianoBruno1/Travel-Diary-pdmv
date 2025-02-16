@@ -39,7 +39,13 @@ data object RecoverPassword {
 data object ResetPassword {
     const val route = "resetpassword"
 }
+
 @Serializable
 data object Settings {
     const val route = "settingsscreen"
+
+
+@Serializable
+data object Camera {
+    const val route = "camera"
 }

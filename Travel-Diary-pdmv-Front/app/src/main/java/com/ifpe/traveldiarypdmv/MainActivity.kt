@@ -40,13 +40,19 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.ifpe.traveldiarypdmv.data.network.ApiService
 import com.ifpe.traveldiarypdmv.data.repository.DiaryRepository
+import com.ifpe.traveldiarypdmv.ui.route.Camera
 import com.ifpe.traveldiarypdmv.ui.route.RecoverPassword
+<<<<<<< HEAD
 import com.ifpe.traveldiarypdmv.ui.screen.settings.SettingsScreen
+=======
+import com.ifpe.traveldiarypdmv.ui.screen.camera.CameraScreen
+>>>>>>> a6f0088 (feat: add camera, criar diario por foto e adicionar foto em diario existente)
 
 
 class MainActivity : ComponentActivity() {
@@ -81,7 +87,11 @@ class MainActivity : ComponentActivity() {
                                 BottomNavItem.Profile.route
                             )
                         ) {
-                            BottomNavigationBar(navController = navController) { }
+
+                            BottomNavigationBar(navController = navController,  onCameraClick = {
+                                navController.navigate(Camera.route)
+                            }
+                            )
 
                         }
                     }
@@ -157,6 +167,14 @@ class MainActivity : ComponentActivity() {
                             val token = uiState.token ?: ""
                             val diaryId = backStackEntry.arguments?.getString("diaryId") ?: ""
                             DetailsScreen(navController = navController, diaryId = diaryId, token = token, userId = userId)
+                        }
+                        composable(Camera.route) {
+                            val token = uiState.token ?: ""
+                            CameraScreen(
+                                navController = navController,
+                                userId = userId,
+                                token = token
+                            )
                         }
 
                         composable(BottomNavItem.Profile.route) {

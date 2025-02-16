@@ -209,4 +209,48 @@ object TravelDiaryRemoteDataSource {
             Result.failure(Exception("Erro ao deletar diário}"))
         }
     }
+
+    suspend fun uploadPhoto(
+        uri: Uri, userId: String, latitude: Double, longitude: Double, token: String, context: Context
+    ): Result<Unit> {
+        return try {
+            val file = uriToFile(uri, context)// Converter URI para arquivo
+
+            val response: HttpResponse = httpClientAndroid.submitFormWithBinaryData(
+                url = "$BASE_URL/v1/api/photos/uploadPhoto/$userId",
+                formData = formData {
+                    append("photo", file.readBytes(), Headers.build {
+                        append(HttpHeaders.ContentType, "image/jpeg")
+                        append(HttpHeaders.ContentDisposition, "filename=\"photo.jpg\"")
+                    })
+                    append("latitude", latitude.toString())
+                    append("longitude", longitude.toString())
+                }
+            )
+//            {
+//                headers {
+//                    append("Authorization", "Bearer $token") // Adiciona o token no cabeçalho
+//                }
+//            }
+            if (response.status == HttpStatusCode.Created) {
+                file.delete() // Exclui o arquivo temporário após o envio bem-sucedido
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception("Erro ao enviar foto: ${response.status}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    private fun uriToFile(uri: Uri, context: Context): File {
+        val inputStream = context.contentResolver.openInputStream(uri) ?: throw IllegalStateException("Erro ao abrir URI")
+        val file = File(context.cacheDir, "temp_photo_${System.currentTimeMillis()}.jpg") // Nome único para evitar conflitos
+
+        file.outputStream().use { outputStream ->
+            inputStream.copyTo(outputStream)
+        }
+
+        return file
+    }
 }
