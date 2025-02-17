@@ -16,6 +16,7 @@ import com.ifpe.traveldiarypdmv.ui.component.map.TravelDiaryGoogleMap
 fun MapScreen(
     modifier: Modifier = Modifier,
     userId: String,
+    onNavigateToDetails: (String) -> Unit,
     viewModel: MapViewModel = viewModel()
 ) {
     val mapPoints by viewModel.mapPoints
@@ -35,6 +36,7 @@ fun MapScreen(
         TravelDiaryGoogleMap(
             modifier = modifier,
             markerLocations = mapPoints,
+            onMarkerClick = { diaryId -> onNavigateToDetails(diaryId) }
         )
     }
 }

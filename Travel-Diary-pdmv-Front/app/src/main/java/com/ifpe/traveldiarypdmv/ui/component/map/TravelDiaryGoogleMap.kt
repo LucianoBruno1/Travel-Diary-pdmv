@@ -21,12 +21,14 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import com.ifpe.traveldiarypdmv.data.model.MapPointResponse
 import kotlinx.coroutines.suspendCancellableCoroutine
 
 @Composable
 fun TravelDiaryGoogleMap(
     modifier: Modifier = Modifier,
-    markerLocations: List<LatLng> = emptyList()
+    markerLocations: List<MapPointResponse> = emptyList(),
+    onMarkerClick: (String) -> Unit
 ) {
     val context = LocalContext.current
     var userLocation by remember { mutableStateOf<LatLng?>(null) }
@@ -44,10 +46,16 @@ fun TravelDiaryGoogleMap(
         uiSettings = MapUiSettings(zoomControlsEnabled = true)
     ) {
         // Adicionando os marcadores passados como parâmetro
-        markerLocations.forEach { location ->
+        markerLocations.forEach {  mapPoint ->
             Marker(
-                state = MarkerState(position = location),
-                icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)
+                state = MarkerState(position = LatLng(mapPoint.latitude, mapPoint.longitude)),
+                icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED),
+                title = mapPoint.diary.name,
+                snippet = "Clique para detalhes",
+                onClick = {
+                    onMarkerClick(mapPoint.diary.id)
+                    true
+                }
             )
         }
     }
