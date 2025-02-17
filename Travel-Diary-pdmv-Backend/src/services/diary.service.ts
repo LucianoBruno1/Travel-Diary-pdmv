@@ -1,3 +1,4 @@
+import { DiaryUpdateResponseDto, UpdateDiaryRequestDto } from "../dtos/diary/diary-update.dto";
 import { CreateDiaryRequestDto, DiaryResponseDto } from "../dtos/diary/diary.dto";
 import { BadRequestError, NotFoundError } from "../helpers/api-erros";
 import { Diary } from "../models/diary.model";
@@ -122,6 +123,24 @@ export class DiaryService {
         return this.toDiaryResponseDto(diary);
     }
 
+    async update(id: string, dto: UpdateDiaryRequestDto): Promise<DiaryUpdateResponseDto>{
+        const diary = await this.diaryRepository.findById(id);
+        if (!diary) {
+            throw new NotFoundError(`Diário com ID ${id} não foi encontrado.`);
+        }
+
+        const data = dto.getAll();
+
+        diary.name = data.name ?? diary.name;
+        diary.description = data.description ?? diary.description;
+        diary.travel_date = data.travel_date ?? diary.travel_date;
+        diary.latitude = diary.latitude;
+        diary.longitude = diary.longitude;
+
+        const diaryUpdate = await this.diaryRepository.update(id, diary);
+        return this.toDiaryUpdateResponseDto(diaryUpdate);
+    }
+
     async remove(id: string){
         const diary = await this.diaryRepository.findById(id);
         if (!diary) throw new NotFoundError(`Diário com o ID ${id} não encontrado`);
@@ -144,6 +163,20 @@ export class DiaryService {
                 id: photo?.id || 'ID Desconhecido',
                 file_path: photo?.file_path ? `${BASE_URL}${photo.file_path.replace(/\\/g, '/')}` : null,
             })) || [],
+        };
+    }
+
+    private toDiaryUpdateResponseDto(diary: Diary): DiaryUpdateResponseDto {
+        return {
+            id: diary.id,
+            name: diary.name,
+            description: diary.description,
+            travel_date: diary.travel_date,
+            city: diary.city,
+            state: diary.state,
+            latitude: diary.latitude,
+            longitude: diary.longitude,
+            user: diary.user ? { id: diary.user.id } : null, 
         };
     }
 }

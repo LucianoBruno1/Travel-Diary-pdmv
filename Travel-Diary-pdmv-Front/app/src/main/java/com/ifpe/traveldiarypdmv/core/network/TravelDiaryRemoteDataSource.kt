@@ -253,4 +253,27 @@ object TravelDiaryRemoteDataSource {
 
         return file
     }
+
+    suspend fun updateDiary(diaryId: String, token: String, name: String, description: String): Result<Unit> {
+        return try {
+            val response = httpClientAndroid.patch("$BASE_URL/v1/api/diaries/$diaryId") {
+                header("Authorization", "Bearer $token")
+                contentType(ContentType.Application.Json)
+                setBody(
+                    mapOf(
+                        "name" to name,
+                        "description" to description
+                    )
+                )
+            }
+
+            if (response.status == HttpStatusCode.OK) {
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception("Erro ao atualizar diário"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }

@@ -29,6 +29,11 @@ export class MapPointService {
             mapPoint.longitude = longitude;
             mapPoint.user = user;
             mapPoint.diary = diary;
+
+             // Garantir que o ID do MapPoint é tratado como novo
+            if (mapPoint.id) {
+                mapPoint.id = undefined; // Forçar como novo (sem ID existente)
+            }
     
             console.log("Tentando salvar MapPoint:", mapPoint);
     

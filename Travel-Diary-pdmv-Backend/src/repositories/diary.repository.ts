@@ -55,4 +55,30 @@ export class DiaryRepository {
     async remove(id: string) {
         return this.dataSource.getRepository(Diary).delete(id);
     }
+
+    async update(id: string, diary: Diary) {
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+
+        try{
+            const { photos, ...diaryWithoutPhotos } = diary;
+
+            await queryRunner.manager.update(Diary, id, diaryWithoutPhotos);
+
+            const updatedDiary = await queryRunner.manager.findOne(Diary, {
+                where: { id },
+                relations: ["user"], 
+            });
+
+            await queryRunner.commitTransaction();
+            return updatedDiary;
+        } catch(error){
+            await queryRunner.rollbackTransaction();
+            throw error;
+        } finally{
+            await queryRunner.release();
+        }
+    }
+
 }

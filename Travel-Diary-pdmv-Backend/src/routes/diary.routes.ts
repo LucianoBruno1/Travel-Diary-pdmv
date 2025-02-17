@@ -14,4 +14,8 @@ diaryRoutes.delete('/diaries/:id', ((req: Request, res: Response, next: NextFunc
          authenticateJWT(req, res, next)
      }), diaryController.remove.bind(diaryController));
 
+diaryRoutes.patch('/diaries/:id', ((req: Request, res: Response, next: NextFunction) => {
+        authenticateJWT(req, res, next)
+    }), diaryController.update.bind(diaryController));
+
 export default diaryRoutes;

@@ -25,7 +25,7 @@ export type DiaryResponseDto = {
     id: string;
     name: string;
     description?: string;
-    travel_date?: Date;
+    travel_date?: Date | string;
     city: string;
     state: string;
     latitude: number;
