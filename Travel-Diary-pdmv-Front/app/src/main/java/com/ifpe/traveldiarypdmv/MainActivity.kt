@@ -179,7 +179,12 @@ class MainActivity : ComponentActivity() {
                         // Map Screen
                         composable(BottomNavItem.Map.route) {
                             if (userId.isNotBlank()) {
-                                MapScreen(userId = userId)
+                                MapScreen(
+                                    userId = userId,
+                                    onNavigateToDetails = { diaryId ->
+                                        navController.navigate("details/$diaryId")
+                                    }
+                                )
                             } else {
                                 Text(text = "Carregando mapa...", modifier = Modifier.padding(16.dp))
                             }
