@@ -2,8 +2,10 @@ package com.ifpe.traveldiarypdmv.ui.screen.camera
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -13,8 +15,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -44,24 +48,23 @@ fun CameraScreen(
 ) {
     val context = LocalContext.current
     var uri by remember { mutableStateOf<Uri?>(null) }
+    var showPermissionDialog by remember { mutableStateOf(false) }
 
-    // Instancia o ViewModel manualmente
+
     val viewModel = UploadPhotoViewModel().apply {
-        // Define os atributos manualmente
         this.travelDiaryRemoteDataSource = TravelDiaryRemoteDataSource
         this.locationProvider = LocationProvider(context)
     }
 
     val uiState by viewModel.uiState.collectAsState()
 
-    // Gera o URI temporário para a foto
     val tempUri = remember {
         generateTempImageUri(context)
     }
 
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { success ->
         if (success) {
-            uri = tempUri // Atualiza o URI após a foto ser tirada
+            uri = tempUri
         } else {
             Toast.makeText(context, "Erro ao capturar a foto.", Toast.LENGTH_SHORT).show()
         }
@@ -72,6 +75,7 @@ fun CameraScreen(
             launcher.launch(tempUri)
         } else {
             Toast.makeText(context, "Permissão da câmera negada!", Toast.LENGTH_SHORT).show()
+            navController.popBackStack()
         }
     }
 
@@ -79,12 +83,13 @@ fun CameraScreen(
         if (isGranted) {
             // Verifica a permissão da câmera
             if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                launcher.launch(tempUri)
+                    launcher.launch(tempUri)
             } else {
                 cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
             }
         } else {
             Toast.makeText(context, "Permissão de localização negada!", Toast.LENGTH_SHORT).show()
+            showPermissionDialog = true
         }
     }
 
@@ -97,7 +102,6 @@ fun CameraScreen(
         ) {
             launcher.launch(tempUri)
         } else {
-            // Solicita a permissão de localização primeiro
             locationPermissionLauncher.launch(locationPermission)
         }
     }
@@ -147,6 +151,35 @@ fun CameraScreen(
             text = uiState.errorMessage!!,
             color = Color.Red,
             modifier = Modifier.padding(16.dp)
+        )
+    }
+
+    // AlertDialog para solicitar ao usuário que vá às configurações ativar a permissão
+    if (showPermissionDialog) {
+        AlertDialog(
+            onDismissRequest = { showPermissionDialog = false },
+            title = { Text("Permissão necessária") },
+            text = { Text("O aplicativo precisa da sua permissão de localização e camera para continuar. Vá para as configurações e ative a permissão manualmente.") },
+            confirmButton = {
+                TextButton(onClick = {
+                    showPermissionDialog = false
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                        data = Uri.fromParts("package", context.packageName, null)
+                    }
+                    context.startActivity(intent)
+                }) {
+                    Text("Ir para Configurações")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    showPermissionDialog = false
+                    navController.popBackStack()
+                }) {
+                    Text("Cancelar")
+
+                }
+            }
         )
     }
 }
