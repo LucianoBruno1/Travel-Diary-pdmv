@@ -49,6 +49,7 @@ import com.ifpe.traveldiarypdmv.data.repository.DiaryRepository
 import com.ifpe.traveldiarypdmv.ui.route.Camera
 import com.ifpe.traveldiarypdmv.ui.route.RecoverPassword
 import com.ifpe.traveldiarypdmv.ui.screen.camera.CameraScreen
+import com.ifpe.traveldiarypdmv.ui.screen.settings.SettingsScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -169,10 +170,13 @@ class MainActivity : ComponentActivity() {
                         composable(BottomNavItem.Profile.route) {
                             val token = uiState.token ?: ""
                             if (userId.isNotBlank()) {
-                                ProfileScreen(userId = userId, token = token)
+                                ProfileScreen(userId = userId, token = token, navController = navController)
                             } else {
                                 Text(text = "Carregando Perfil...", modifier = Modifier.padding(16.dp))
                             }
+                        }
+                        composable("settings") {
+                            SettingsScreen(onBackClick = { navController.popBackStack() })
                         }
 
 

@@ -1,37 +1,25 @@
 package com.ifpe.traveldiarypdmv.ui.screen.profile
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.ifpe.traveldiarypdmv.ui.component.button.TravelDiaryButton
+import androidx.navigation.NavController
 import com.ifpe.traveldiarypdmv.ui.component.profile_header.ProfileHeader
-import com.ifpe.traveldiarypdmv.ui.component.screen_header.ScreenHeader
 import com.ifpe.traveldiarypdmv.ui.theme.GreenBase
+import com.ifpe.traveldiarypdmv.ui.component.button.TravelDiaryButton
 
 @Composable
 fun ProfileScreen(
-    modifier: Modifier = Modifier,
+    navController: NavController,
     viewModel: ProfileViewModel = viewModel(),
     userId: String,
     token: String
@@ -44,29 +32,43 @@ fun ProfileScreen(
     }
 
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
-
-        ScreenHeader("Perfil de Usuário")
+        // Cabeçalho com título e botão de configurações
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(text = "Perfil de Usuário", style = MaterialTheme.typography.headlineMedium)
+            IconButton(
+                onClick = { navController.navigate("settings") } // Garante a navegação correta
+            ) {
+                Icon(imageVector = Icons.Default.Settings, contentDescription = "Configurações")
+            }
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
-
 
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
-                .shadow(8.dp, shape = RoundedCornerShape(16.dp), ambientColor = Color.Black.copy(alpha = 0.3f))
+                .shadow(8.dp, shape = RoundedCornerShape(16.dp))
                 .background(Color.White)
                 .padding(20.dp)
         ) {
-            ProfileHeader(profilePicture = uiState.profilePicture, name = uiState.name, birthDate = uiState.birthDate)
+            ProfileHeader(
+                profilePicture = uiState.profilePicture,
+                name = uiState.name,
+                birthDate = uiState.birthDate
+            )
         }
 
         Spacer(modifier = Modifier.height(32.dp))
-
 
         Box(
             modifier = Modifier
@@ -93,9 +95,11 @@ fun ProfileScreen(
                     .heightIn(min = 150.dp)
                     .padding(top = 16.dp),
                 maxLines = 10,
-                singleLine = false,
+                singleLine = false
             )
+
             Spacer(modifier = Modifier.height(20.dp))
+
             TravelDiaryButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = "Salvar",
