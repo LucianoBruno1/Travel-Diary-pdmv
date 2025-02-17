@@ -10,5 +10,6 @@ data class DetailsUiState(
     val isLoading: Boolean = false,
     val isUploading: Boolean = false,
     val errorMessage: String? = null,
+    val isUpdated: Boolean = false,
     val isDeleted: Boolean = false
 )

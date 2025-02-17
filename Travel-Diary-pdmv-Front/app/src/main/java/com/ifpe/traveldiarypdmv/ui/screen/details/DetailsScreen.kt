@@ -66,6 +66,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.ifpe.traveldiarypdmv.ui.component.dialog_delete.DeleteDiaryDialog
+import com.ifpe.traveldiarypdmv.ui.component.dialog_edit.EditDiaryDialog
 import com.ifpe.traveldiarypdmv.ui.component.dropdown_menu.TravelDiaryDropdownMenu
 import com.ifpe.traveldiarypdmv.ui.theme.Gray200
 import com.ifpe.traveldiarypdmv.ui.theme.GreenBase
@@ -83,20 +84,17 @@ fun DetailsScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     var menuExpanded by remember { mutableStateOf(false) } // Controle do menu
-    var currentImageIndex by remember { mutableStateOf(0) } // Índice da imagem atual
-
     var selectedImageUrl by remember { mutableStateOf<String?>(null) }
-
     var showPhotoDialog by remember { mutableStateOf(false) }
     var selectedPhotos by remember { mutableStateOf<List<Uri>>(emptyList()) }
-
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var showEditDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         viewModel.onEvent(DetailsUiEvent.LoadDiary(diaryId, token))
     }
 
-    val context = LocalContext.current
 
     LaunchedEffect(selectedPhotos) {
         if (selectedPhotos.isNotEmpty()) {
@@ -169,7 +167,7 @@ fun DetailsScreen(
                         onDismissRequest = { menuExpanded = false },
                         onEditClick = {
                             menuExpanded = false
-                            println("Editar Diário Selecionado")
+                            showEditDialog = true
                         },
                         onDeleteClick = {
                             menuExpanded = false
@@ -203,6 +201,18 @@ fun DetailsScreen(
                         )
                     }
 
+                    if (showEditDialog) {
+                        EditDiaryDialog(
+                            uiState = uiState,
+                            onDismiss = { showEditDialog = false },
+                            onConfirm = { name, description ->
+                                viewModel.onEvent(
+                                    DetailsUiEvent.UpdateDiary(diaryId, token, name, description)
+                                )
+                                showEditDialog = false
+                            }
+                        )
+                    }
                 }
             }
 

@@ -21,23 +21,39 @@ class DetailsViewModel : ViewModel() {
             is DetailsUiEvent.LoadDiary -> loadDiary(event.diaryId, event.token)
             is DetailsUiEvent.UploadPhotos -> uploadPhotos(event.userId, event.diaryId, event.photos, event.context)
             is DetailsUiEvent.DeleteDiary -> deleteDiary(event.diaryId, event.token)
+            is DetailsUiEvent.UpdateDiary -> updateDiary(event.diaryId, event.token, event.name, event.description)
         }
     }
 
-//    private fun deleteDiary(diaryId: String, token: String) {
-//        viewModelScope.launch {
-//            try {
-//                val result = TravelDiaryRemoteDataSource.deleteDiary(diaryId, token)
-//                if (result.isSuccess) {
-//                    _uiState.value = _uiState.value.copy(isDeleted = true)
-//                } else {
-//                    throw Exception("Erro ao deletar diário")
-//                }
-//            } catch (e: Exception) {
-//                _uiState.value = _uiState.value.copy(errorMessage = e.message)
-//            }
-//        }
-//    }
+    private fun updateDiary(diaryId: String, token: String, name: String, description: String) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, isUpdated = false) }
+
+            try {
+                val result = TravelDiaryRemoteDataSource.updateDiary(
+                    diaryId,
+                    token,
+                    name,
+                    description
+                )
+
+                result.onSuccess {
+                    _uiState.update {
+                        it.copy(
+                            name = name,
+                            description = description,
+                            isLoading = false,
+                            isUpdated = true
+                        )
+                    }
+                }.onFailure { exception ->
+                    _uiState.update { it.copy(isLoading = false, errorMessage = exception.message) }
+                }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(isLoading = false, errorMessage = e.message) }
+            }
+        }
+    }
 
     private fun deleteDiary(diaryId: String, token: String) {
         viewModelScope.launch {
