@@ -26,7 +26,9 @@
   <h3>Cadastro:</h3>
   <img src="https://github.com/user-attachments/assets/bc077be7-9829-44ee-8184-e29736a9233f" width = 300px/>
   <h3>Feed inicial:</h3>
-  <img src="https://github.com/user-attachments/assets/1247e6a0-67fa-4bc9-a530-e37e9c335ad2" width = 300px/>
+  <img src="https://github.com/user-attachments/assets/86cdbbac-7a08-44db-87dc-217fa2194b36" width = 300px/>
+  <h3>Favoritos:</h3>
+  <img src="https://github.com/user-attachments/assets/524c8178-d227-43d9-9e87-145e4698512b" width = 300px/>
   <h3>Detalhe de diários:</h3>
   <img src="https://github.com/user-attachments/assets/c2d627e2-6fcb-4bd0-9ff5-c1c5c6923566" width = 300px/>
   <h3>Mapa:</h3>
