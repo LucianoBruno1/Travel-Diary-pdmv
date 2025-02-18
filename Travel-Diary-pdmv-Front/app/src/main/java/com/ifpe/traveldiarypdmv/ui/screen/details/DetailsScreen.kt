@@ -3,8 +3,6 @@ package com.ifpe.traveldiarypdmv.ui.screen.details
 import android.content.res.Configuration
 import android.net.Uri
 import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -32,8 +30,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -57,7 +53,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -68,6 +63,7 @@ import coil3.compose.AsyncImage
 import com.ifpe.traveldiarypdmv.ui.component.dialog_delete.DeleteDiaryDialog
 import com.ifpe.traveldiarypdmv.ui.component.dialog_edit.EditDiaryDialog
 import com.ifpe.traveldiarypdmv.ui.component.dropdown_menu.TravelDiaryDropdownMenu
+import com.ifpe.traveldiarypdmv.ui.component.photo_upload.PhotoUploadDialog
 import com.ifpe.traveldiarypdmv.ui.theme.Gray200
 import com.ifpe.traveldiarypdmv.ui.theme.GreenBase
 import com.ifpe.traveldiarypdmv.ui.theme.Typography
@@ -222,21 +218,6 @@ fun DetailsScreen(
                 Log.d("DetailsScreen", "Lista de imagens recebida: ${uiState.images}")
 
                 if (images.isNotEmpty()) {
-//                    Image(
-//                        painter = rememberAsyncImagePainter(
-//                            ImageRequest.Builder(LocalContext.current)
-//                                .data(images[currentImageIndex])
-//                                .crossfade(true) // Efeito de transição suave entre imagens
-//                                .build()
-//                        ), // Substituir por Coil ou Glide para imagens remotas
-//                        contentDescription = "Imagem do diário",
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .heightIn(max = 300.dp)
-//                            .padding(start = 10.dp, end = 10.dp, bottom = 25.dp, top = 25.dp),
-//                        contentScale = ContentScale.Crop
-//                    )
-//
                     LazyRow(
                         contentPadding = PaddingValues(horizontal = 16.dp),
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -274,22 +255,6 @@ fun DetailsScreen(
                             )
                         }
                     }
-
-
-//                    IconButton(
-//                        modifier = Modifier.align(Alignment.CenterEnd),
-//                        onClick = {
-//                            currentImageIndex =
-//                                (currentImageIndex + 1) % images.size // Avança para a próxima imagem
-//                        },
-//                    ) {
-//                        Icon(
-//                            modifier = Modifier.size(55.dp),
-//                            imageVector = Icons.Default.KeyboardArrowRight,
-//                            contentDescription = "Passar imagens",
-//                            tint = Color.Gray
-//                        )
-//                    }
                 }
             }
 
@@ -436,43 +401,5 @@ fun FullscreenImageViewer(imageUrl: String, onClose: () -> Unit) {
                 )
                 .transformable(transformationState)
         )
-    }
-}
-
-@Composable
-fun PhotoUploadDialog(
-    onDismiss: () -> Unit,
-    onPhotosSelected: (List<Uri>) -> Unit
-) {
-    val context = LocalContext.current
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetMultipleContents()
-    ) { uris ->
-        if (uris.isNotEmpty()) {
-            onPhotosSelected(uris)
-        }
-    }
-
-    Dialog(onDismissRequest = onDismiss) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.White, shape = RoundedCornerShape(16.dp))
-                .padding(16.dp)
-        ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("Adicionar Fotos", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Button(onClick = { launcher.launch("image/*") }) {
-                    Text("Selecionar Fotos")
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-                Button(onClick = onDismiss, colors = ButtonDefaults.buttonColors(Color.Red)) {
-                    Text("Cancelar")
-                }
-            }
-        }
     }
 }

@@ -3,9 +3,21 @@ package com.ifpe.traveldiarypdmv.ui.screen.resetpassword
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,13 +29,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ifpe.traveldiarypdmv.R
+import com.ifpe.traveldiarypdmv.data.network.ResetPasswordRequest
+import com.ifpe.traveldiarypdmv.data.network.RetrofitClient.authService
 import com.ifpe.traveldiarypdmv.ui.component.button.TravelDiaryButton
 import com.ifpe.traveldiarypdmv.ui.component.text_input.TravelDiaryTextField
 import com.ifpe.traveldiarypdmv.ui.theme.GreenBase
 import com.ifpe.traveldiarypdmv.ui.theme.Typography
-import com.ifpe.traveldiarypdmv.data.network.ResetPasswordRequest
-import com.ifpe.traveldiarypdmv.data.network.RetrofitClient
-import com.ifpe.traveldiarypdmv.data.network.RetrofitClient.authService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -67,7 +78,7 @@ fun ResetPasswordScreen(navController: NavController, email: String) {
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        // Campo para inserir o token
+        //campo para inserir o token
         TravelDiaryTextField(
             value = token,
             onValueChange = { token = it },
@@ -78,7 +89,7 @@ fun ResetPasswordScreen(navController: NavController, email: String) {
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Campo para inserir a nova senha
+        //campo para inserir a nova senha
         TravelDiaryTextField(
             value = newPassword,
             onValueChange = { newPassword = it },

@@ -4,7 +4,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.maps.model.LatLng
 import com.ifpe.traveldiarypdmv.core.network.TravelDiaryRemoteDataSource
 import com.ifpe.traveldiarypdmv.data.model.MapPointResponse
 import kotlinx.coroutines.launch

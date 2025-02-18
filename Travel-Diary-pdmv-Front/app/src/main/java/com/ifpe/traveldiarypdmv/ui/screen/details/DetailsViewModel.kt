@@ -1,6 +1,5 @@
 package com.ifpe.traveldiarypdmv.ui.screen.details
 
-import android.R.id
 import android.content.Context
 import android.net.Uri
 import android.util.Log

@@ -62,43 +62,57 @@ fun CameraScreen(
         generateTempImageUri(context)
     }
 
-    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { success ->
-        if (success) {
-            uri = tempUri
-        } else {
-            Toast.makeText(context, "Erro ao capturar a foto.", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    val cameraPermissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-        if (isGranted) {
-            launcher.launch(tempUri)
-        } else {
-            Toast.makeText(context, "Permissão da câmera negada!", Toast.LENGTH_SHORT).show()
-            navController.popBackStack()
-        }
-    }
-
-    val locationPermissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-        if (isGranted) {
-            // Verifica a permissão da câmera
-            if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                    launcher.launch(tempUri)
+    val launcher =
+        rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+            if (success) {
+                uri = tempUri
             } else {
-                cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                Toast.makeText(context, "Erro ao capturar a foto.", Toast.LENGTH_SHORT).show()
             }
-        } else {
-            Toast.makeText(context, "Permissão de localização negada!", Toast.LENGTH_SHORT).show()
-            showPermissionDialog = true
         }
-    }
+
+    val cameraPermissionLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                launcher.launch(tempUri)
+            } else {
+                Toast.makeText(context, "Permissão da câmera negada!", Toast.LENGTH_SHORT).show()
+                navController.popBackStack()
+            }
+        }
+
+    val locationPermissionLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                // Verifica a permissão da câmera
+                if (ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.CAMERA
+                    ) == PackageManager.PERMISSION_GRANTED
+                ) {
+                    launcher.launch(tempUri)
+                } else {
+                    cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                }
+            } else {
+                Toast.makeText(context, "Permissão de localização negada!", Toast.LENGTH_SHORT)
+                    .show()
+                showPermissionDialog = true
+            }
+        }
 
     LaunchedEffect(Unit) {
         val cameraPermission = Manifest.permission.CAMERA
         val locationPermission = Manifest.permission.ACCESS_FINE_LOCATION
 
-        if (ContextCompat.checkSelfPermission(context, cameraPermission) == PackageManager.PERMISSION_GRANTED &&
-            ContextCompat.checkSelfPermission(context, locationPermission) == PackageManager.PERMISSION_GRANTED
+        if (ContextCompat.checkSelfPermission(
+                context,
+                cameraPermission
+            ) == PackageManager.PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(
+                context,
+                locationPermission
+            ) == PackageManager.PERMISSION_GRANTED
         ) {
             launcher.launch(tempUri)
         } else {
@@ -126,7 +140,14 @@ fun CameraScreen(
                 // Botão "Salvar"
                 Button(
                     onClick = {
-                        viewModel.onEvent(UploadPhotoUiEvent.UploadPhoto(uri!!, userId, token, context))
+                        viewModel.onEvent(
+                            UploadPhotoUiEvent.UploadPhoto(
+                                uri!!,
+                                userId,
+                                token,
+                                context
+                            )
+                        )
                         navController.popBackStack() // Volta para a tela anterior após salvar
                     },
                     modifier = Modifier.padding(end = 8.dp)

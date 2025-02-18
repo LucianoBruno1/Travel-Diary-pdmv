@@ -14,15 +14,14 @@ fun TravelDiaryDropdownMenu(
     onEditClick: () -> Unit,              // Ação para editar
     onDeleteClick: () -> Unit,
     onAddPhotosClick: () -> Unit
-    ) {
+) {
 
-    // DropdownMenu para exibir as opções
     DropdownMenu(
         expanded = expanded,
         onDismissRequest = onDismissRequest,
-        modifier = modifier, // Mantém o modificador para controle externo
+        modifier = modifier,
     ) {
-        // Opção Editar Diário
+        // Editar Diário
         DropdownMenuItem(
             text = { Text("Editar Diário") },
             onClick = {
@@ -31,7 +30,7 @@ fun TravelDiaryDropdownMenu(
             }
         )
 
-        // Opção Excluir Diário
+        // Excluir Diário
         DropdownMenuItem(
             text = { Text("Excluir Diário") },
             onClick = {
@@ -39,7 +38,7 @@ fun TravelDiaryDropdownMenu(
                 onDeleteClick()
             }
         )
-
+        // Adicionar foto no Diário
         DropdownMenuItem(
             text = { Text("Adicionar Fotos") },
             onClick = {

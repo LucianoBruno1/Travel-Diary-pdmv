@@ -19,11 +19,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ifpe.traveldiarypdmv.ui.theme.GreenBase
-import com.ifpe.traveldiarypdmv.ui.theme.Typography
 import com.ifpe.traveldiarypdmv.R
 import com.ifpe.traveldiarypdmv.ui.theme.Gray100
-import com.ifpe.traveldiarypdmv.ui.theme.Gray600
+import com.ifpe.traveldiarypdmv.ui.theme.GreenBase
+import com.ifpe.traveldiarypdmv.ui.theme.Typography
 
 @Composable
 fun TravelDiaryButton(
@@ -31,15 +30,15 @@ fun TravelDiaryButton(
     text: String? = null,
     @DrawableRes iconRes: Int? = null,
     onClick: () -> Unit,
-    containerColor: Color = GreenBase, // Cor do botão
-    contentColor: Color = Color.White, // Cor do conteúdo (texto/ícone)
-    enabled: Boolean = true, // Controle se o botão está habilitado
-    fontSize: Float? = null // Novo parâmetro para o tamanho da fonte
+    containerColor: Color = GreenBase,
+    contentColor: Color = Color.White,
+    enabled: Boolean = true,
+    fontSize: Float? = null
 ) {
     Button(
         modifier = modifier.heightIn(min = 46.dp),
         shape = RoundedCornerShape(40.dp),
-        contentPadding = if(text == null && iconRes != null) PaddingValues(0.dp) else ButtonDefaults.ContentPadding,
+        contentPadding = if (text == null && iconRes != null) PaddingValues(0.dp) else ButtonDefaults.ContentPadding,
         colors = ButtonDefaults.buttonColors(
             containerColor = containerColor,
             contentColor = contentColor
@@ -51,15 +50,17 @@ fun TravelDiaryButton(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Se existir um ícone, exibe o ícone
+            // s existir um ícone, exibe o ícone
             iconRes?.let {
                 Icon(painter = painterResource(id = iconRes), contentDescription = "Ícone do Botão")
             }
-            // Exibe o texto, aplicando o fontSize se fornecido
+            // mostra o texto, aplicando o fontSize se fornecido
             text?.let {
                 Text(
                     text = text.replaceFirstChar { it.uppercase() },
-                    style = Typography.labelLarge.copy(fontSize = fontSize?.sp ?: Typography.labelLarge.fontSize)
+                    style = Typography.labelLarge.copy(
+                        fontSize = fontSize?.sp ?: Typography.labelLarge.fontSize
+                    )
                 )
             }
         }

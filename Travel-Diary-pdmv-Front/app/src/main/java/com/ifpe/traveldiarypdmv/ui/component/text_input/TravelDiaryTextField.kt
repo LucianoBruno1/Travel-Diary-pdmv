@@ -19,17 +19,18 @@ import androidx.compose.ui.unit.dp
 import com.ifpe.traveldiarypdmv.ui.theme.Typography
 
 @Composable
-fun TravelDiaryTextField(value: String,
-                         onValueChange: (String) -> Unit,
-                         labelText: String,
-                         leadingIconPainter: Painter,
-                         leadingIconDescription: String,
-                         modifier: Modifier = Modifier
+fun TravelDiaryTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    labelText: String,
+    leadingIconPainter: Painter,
+    leadingIconDescription: String,
+    modifier: Modifier = Modifier
 ) {
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(bottom = 16.dp) // Espaçamento adicional
+            .padding(bottom = 16.dp)
     ) {
         // Campo de texto
         TextField(
@@ -45,7 +46,7 @@ fun TravelDiaryTextField(value: String,
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 4.dp), // Ajusta o espaçamento interno para a linha
+                .padding(bottom = 4.dp),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.White,
                 unfocusedContainerColor = Color.White,

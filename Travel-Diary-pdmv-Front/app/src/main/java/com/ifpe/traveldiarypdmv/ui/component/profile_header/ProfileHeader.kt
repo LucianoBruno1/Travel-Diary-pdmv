@@ -57,7 +57,9 @@ fun ProfileHeader(profilePicture: String?, name: String, birthDate: String?) {
             }
             Spacer(modifier = Modifier.height(10.dp))
             TravelDiaryButton(
-                modifier = Modifier.width(100.dp).height(30.dp),
+                modifier = Modifier
+                    .width(100.dp)
+                    .height(30.dp),
                 text = "Carregar",
                 containerColor = GreenBase,
                 contentColor = Color.White,
@@ -104,5 +106,5 @@ fun ProfileHeader(profilePicture: String?, name: String, birthDate: String?) {
 @Preview
 @Composable
 private fun ProfileHeaderPreview() {
-    ProfileHeader(null , "Eduardo", "22/01/1998")
+    ProfileHeader(null, "Eduardo", "22/01/1998")
 }

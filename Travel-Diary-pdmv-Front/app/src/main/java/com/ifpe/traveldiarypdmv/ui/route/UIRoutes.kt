@@ -31,10 +31,12 @@ data object Profile {
 data object Details {
     const val route = "details"
 }
+
 @Serializable
 data object RecoverPassword {
     const val route = "recoverpassword"
 }
+
 @Serializable
 data object ResetPassword {
     const val route = "resetpassword"
@@ -43,4 +45,9 @@ data object ResetPassword {
 @Serializable
 data object Camera {
     const val route = "camera"
+}
+
+@Serializable
+data object CreateDiary {
+    const val route = "creatediary"
 }

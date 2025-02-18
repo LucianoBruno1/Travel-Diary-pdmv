@@ -46,7 +46,7 @@ fun TravelDiaryGoogleMap(
         uiSettings = MapUiSettings(zoomControlsEnabled = true)
     ) {
         // Adicionando os marcadores passados como parâmetro
-        markerLocations.forEach {  mapPoint ->
+        markerLocations.forEach { mapPoint ->
             Marker(
                 state = MarkerState(position = LatLng(mapPoint.latitude, mapPoint.longitude)),
                 icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED),
@@ -61,9 +61,8 @@ fun TravelDiaryGoogleMap(
     }
 }
 
-/**
- * Obtém a localização atual do usuário.
- */
+
+// Obtém a localização atual do usuário.
 @SuppressLint("MissingPermission")
 private suspend fun getCurrentLocation(context: Context): LatLng? {
     val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)

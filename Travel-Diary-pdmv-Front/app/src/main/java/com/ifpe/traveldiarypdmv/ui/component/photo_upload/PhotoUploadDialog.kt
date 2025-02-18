@@ -1,10 +1,11 @@
-package com.ifpe.traveldiarypdmv.ui.component.dialog_delete
+package com.ifpe.traveldiarypdmv.ui.component.photo_upload
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,17 +18,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 
 @Composable
-fun DeleteDiaryDialog(
+fun PhotoUploadDialog(
     onDismiss: () -> Unit,
-    onConfirm: () -> Unit
+    onPhotosSelected: (List<Uri>) -> Unit
 ) {
+    val context = LocalContext.current
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetMultipleContents()
+    ) { uris ->
+        if (uris.isNotEmpty()) {
+            onPhotosSelected(uris)
+        }
+    }
+
     Dialog(onDismissRequest = onDismiss) {
         Box(
             modifier = Modifier
@@ -36,19 +46,16 @@ fun DeleteDiaryDialog(
                 .padding(16.dp)
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("Deseja apagar este diário?", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text("Adicionar Fotos", fontSize = 20.sp, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Row(
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Button(onClick = onConfirm, colors = ButtonDefaults.buttonColors(Color.Red)) {
-                        Text("Apagar")
-                    }
-                    Button(onClick = onDismiss) {
-                        Text("Cancelar")
-                    }
+                Button(onClick = { launcher.launch("image/*") }) {
+                    Text("Selecionar Fotos")
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(onClick = onDismiss, colors = ButtonDefaults.buttonColors(Color.Red)) {
+                    Text("Cancelar")
                 }
             }
         }

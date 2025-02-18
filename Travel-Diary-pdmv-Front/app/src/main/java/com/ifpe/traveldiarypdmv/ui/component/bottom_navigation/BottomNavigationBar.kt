@@ -34,7 +34,13 @@ sealed class BottomNavItem(val route: String, val icon: ImageVector, val title: 
 
 @Composable
 fun BottomNavigationBar(navController: NavController, onCameraClick: () -> Unit) {
-    val items = listOf(BottomNavItem.Home, BottomNavItem.Map, BottomNavItem.Camera, BottomNavItem.Favorite, BottomNavItem.Profile)
+    val items = listOf(
+        BottomNavItem.Home,
+        BottomNavItem.Map,
+        BottomNavItem.Camera,
+        BottomNavItem.Favorite,
+        BottomNavItem.Profile
+    )
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 

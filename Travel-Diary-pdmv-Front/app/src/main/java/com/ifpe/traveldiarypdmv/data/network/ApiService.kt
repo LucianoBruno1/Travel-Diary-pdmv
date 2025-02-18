@@ -1,6 +1,7 @@
 package com.ifpe.traveldiarypdmv.data.network
 
 import com.ifpe.traveldiarypdmv.data.model.Diary
+import com.ifpe.traveldiarypdmv.data.model.DiaryManual
 import com.ifpe.traveldiarypdmv.data.model.FavoriteDiaryResponse
 import com.ifpe.traveldiarypdmv.data.model.FavoriteIds
 import com.ifpe.traveldiarypdmv.data.network.ResetPasswordRequest
@@ -23,6 +24,10 @@ interface ApiService {
 
     @POST("reset_password")
     suspend fun resetPassword(@Body request: ResetPasswordRequest): Response<Unit>
+
+    @POST("diaries")
+    suspend fun createDiary(@Body diary: DiaryManual): Response<Unit>
+
 
     @POST("favorites")
     suspend fun toggleFavorite(@Body ids: FavoriteIds): Response<Unit>

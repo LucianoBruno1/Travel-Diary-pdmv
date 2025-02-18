@@ -39,6 +39,6 @@ class RegisterViewModel : ViewModel() {
     }
 
     fun resetAfterSuccess() {
-        _uiState.value = RegisterUiState() // Limpa o estado após o sucesso
+        _uiState.value = RegisterUiState()
     }
 }
