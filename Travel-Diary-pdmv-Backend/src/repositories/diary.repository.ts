@@ -44,11 +44,25 @@ export class DiaryRepository {
         });
     }
 
-    async findDiaryWithPhotos(diaryId: string): Promise<Diary | null> {
+    /**
+     * Busca um diário específico pelo ID
+     * @param diaryId ID do diário
+     * @returns Diário encontrado
+     */
+    async getDiaryById(diaryId: string): Promise<Diary | null> {
         const diaryRepository = this.dataSource.getRepository(Diary);
         return await diaryRepository.findOne({
             where: { id: diaryId },
             relations: ['photos', 'user'],
+        });
+    }
+
+
+    async findDiaryWithPhotos(diaryId: string): Promise<Diary | null> {
+        const diaryRepository = this.dataSource.getRepository(Diary);
+        return await diaryRepository.findOne({
+            where: { id: diaryId },
+            relations: ['user'],
         });
     }
 

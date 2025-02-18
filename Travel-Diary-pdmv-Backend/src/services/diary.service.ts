@@ -47,6 +47,14 @@ export class DiaryService {
         return diaries;
     }
 
+    async getDiaryById(diaryId: string) {
+        const diary = await this.diaryRepository.getDiaryById(diaryId);
+        if (!diary) {
+            throw new NotFoundError("Nenhum diário encontrado para esse id.");
+        }
+        return diary;
+    }
+
     async createDiaryByPhoto(latitude: number, longitude: number, city: string, state: string, id: string): Promise<Diary> {
 
         const existingDiary = await this.diaryRepository.findByStateAndUser(state, id);

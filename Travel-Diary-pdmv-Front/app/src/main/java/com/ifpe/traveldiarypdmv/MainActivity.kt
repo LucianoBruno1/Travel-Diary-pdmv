@@ -49,6 +49,7 @@ import com.ifpe.traveldiarypdmv.data.repository.DiaryRepository
 import com.ifpe.traveldiarypdmv.ui.route.Camera
 import com.ifpe.traveldiarypdmv.ui.route.RecoverPassword
 import com.ifpe.traveldiarypdmv.ui.screen.camera.CameraScreen
+import com.ifpe.traveldiarypdmv.ui.screen.favorite.FavoriteScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -192,7 +193,13 @@ class MainActivity : ComponentActivity() {
 
                         // Favorite Screen (placeholder)
                         composable(BottomNavItem.Favorite.route) {
-                            Text(text = "Tela de Favoritos em construção...", modifier = Modifier.padding(16.dp))
+                            FavoriteScreen(
+                                userId = userId,
+                                repository = diaryRepository,
+                                onNavigateToDetails = { diaryId ->
+                                    navController.navigate("details/$diaryId")
+                                }
+                            )
                         }
                         // Reset Password Screen
                         composable("resetpassword/{email}") { backStackEntry ->

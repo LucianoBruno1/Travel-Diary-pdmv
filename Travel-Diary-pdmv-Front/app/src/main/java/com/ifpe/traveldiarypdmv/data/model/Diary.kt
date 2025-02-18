@@ -6,5 +6,6 @@ data class Diary(
     val description: String?,
     val travel_date: String,
     val city: String,
-    val state: String
+    val state: String,
+    val isFavorited: Boolean = false,
 )

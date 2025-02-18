@@ -5,6 +5,7 @@ import { User } from "../models/user.model";
 import { Diary } from "../models/diary.model";
 import { Photo } from "../models/photo.model";
 import { MapPoint } from "../models/map_point.model";
+import { FavoriteDiary } from "../models/favorite_diaries.model";
 
 dotenv.config();
 
@@ -21,7 +22,7 @@ export const AppDataSource = new DataSource({
     // Somente use synchronize em ambiente de desenvolvimento, desabilite em produção
     synchronize: false,
     logging: NODE_ENV === "dev" ? true : false,
-    entities: [User, Diary, Photo, MapPoint],
+    entities: [User, Diary, Photo, MapPoint, FavoriteDiary],
     migrations: ["src/database/migrations/*.ts"],
     subscribers: []
 });
