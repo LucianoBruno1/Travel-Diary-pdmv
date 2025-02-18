@@ -71,17 +71,6 @@ fun ProfileHeader(profilePicture: String?, name: String, birthDate: String?) {
         Column(modifier = Modifier.padding(15.dp)) {
             Row(modifier = Modifier.fillMaxWidth()) {
                 Spacer(modifier = Modifier.weight(1f))
-                IconButton(
-                    modifier = Modifier.padding(16.dp),
-                    onClick = {
-                        Log.d("IconButton", "Botão de configurações clicado!")
-                    },
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Settings,
-                        contentDescription = "Ícone de configuração do APP"
-                    )
-                }
             }
             Text(
                 text = name,
