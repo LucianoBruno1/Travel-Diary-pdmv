@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -16,6 +17,7 @@ import androidx.navigation.NavController
 import com.ifpe.traveldiarypdmv.ui.component.profile_header.ProfileHeader
 import com.ifpe.traveldiarypdmv.ui.theme.GreenBase
 import com.ifpe.traveldiarypdmv.ui.component.button.TravelDiaryButton
+import com.ifpe.traveldiarypdmv.ui.component.screen_header.ScreenHeader
 
 @Composable
 fun ProfileScreen(
@@ -36,14 +38,14 @@ fun ProfileScreen(
             .fillMaxSize()
             .background(Color.White)
     ) {
+        ScreenHeader("Perfil do Usuário")
         //   cabeçalho com título e botão de configurações
-        Row(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+            contentAlignment = Alignment.CenterEnd
         ) {
-            Text(text = "Perfil de Usuário", style = MaterialTheme.typography.headlineMedium)
             IconButton(
                 onClick = { navController.navigate("settings") } // Garante a navegação correta
             ) {
@@ -51,7 +53,7 @@ fun ProfileScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(5.dp))
 
         Box(
             modifier = Modifier
