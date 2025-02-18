@@ -1,6 +1,7 @@
 package com.ifpe.traveldiarypdmv.data.network
 
 import com.ifpe.traveldiarypdmv.data.model.Diary
+import com.ifpe.traveldiarypdmv.data.model.DiaryManual
 import com.ifpe.traveldiarypdmv.data.network.ResetPasswordRequest
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -17,6 +18,10 @@ interface ApiService {
 
     @POST("reset_password")
     suspend fun resetPassword(@Body request: ResetPasswordRequest): Response<Unit>
+
+    @POST("diaries")
+    suspend fun createDiary(@Body diary: DiaryManual): Response<Unit>
+
 
     companion object {
         fun create(): ApiService {

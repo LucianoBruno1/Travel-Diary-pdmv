@@ -1,5 +1,6 @@
 package com.ifpe.traveldiarypdmv
 
+import CreateDiaryScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -38,18 +39,24 @@ import com.ifpe.traveldiarypdmv.ui.screen.splash.SplashScreen
 import com.ifpe.traveldiarypdmv.ui.theme.TravelDiaryPDMVTheme
 import android.Manifest
 import android.content.pm.PackageManager
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import com.ifpe.traveldiarypdmv.data.model.DiaryManual
 import com.ifpe.traveldiarypdmv.data.network.ApiService
+import com.ifpe.traveldiarypdmv.data.network.RetrofitClient
 import com.ifpe.traveldiarypdmv.data.repository.DiaryRepository
 import com.ifpe.traveldiarypdmv.ui.route.Camera
 import com.ifpe.traveldiarypdmv.ui.route.RecoverPassword
 import com.ifpe.traveldiarypdmv.ui.screen.camera.CameraScreen
+
 import com.ifpe.traveldiarypdmv.ui.screen.settings.SettingsScreen
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class MainActivity : ComponentActivity() {
@@ -135,6 +142,7 @@ class MainActivity : ComponentActivity() {
 
                         composable(Home.route) {
                             HomeScreen(
+                                navController = navController, // ✅ Adicionado
                                 userId = userId,
                                 repository = diaryRepository,
                                 onLogout = {
@@ -145,9 +153,14 @@ class MainActivity : ComponentActivity() {
                                 },
                                 onNavigateToDetails = { diaryId ->
                                     navController.navigate("details/$diaryId")
+                                },
+                                onCreateDiaryClick = {
+                                    navController.navigate("createDiary")
                                 }
                             )
                         }
+
+
 
                         // Details Screen
                         composable(
@@ -178,6 +191,43 @@ class MainActivity : ComponentActivity() {
                         composable("settings") {
                             SettingsScreen(onBackClick = { navController.popBackStack() })
                         }
+                        // ✅ Adicione esta linha para garantir que a tela de criação de diário seja reconhecida
+                        composable("createDiary/{id}") { backStackEntry ->
+                            CreateDiaryScreen(
+                                navController = navController,
+                                userId = userId,
+                                onSaveClick = { name, description, latitude, longitude ->
+                                    try {
+                                        val latitudeDouble = latitude.toDouble()
+                                        val longitudeDouble = longitude.toDouble()
+
+                                        val diaryManual = DiaryManual(
+                                            name = name,
+                                            description = description,
+                                            latitude = latitudeDouble,
+                                            longitude = longitudeDouble,
+                                            id = userId
+                                        )
+
+                                        // Aqui, você deve chamar a função de rede dentro de uma coroutine
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            val response = DiaryRepository(RetrofitClient.apiService).createDiary(diaryManual)
+
+                                            if (response.isSuccessful) {
+                                                Log.d("CreateDiary", "Diário salvo: ${diaryManual.name}")
+                                            } else {
+                                                Log.e("CreateDiary", "Erro ao salvar diário: ${response.code()} ${response.message()}")
+                                            }
+                                        }
+                                    } catch (e: NumberFormatException) {
+                                        Log.e("CreateDiary", "Erro ao converter latitude/longitude: ${e.message}")
+                                    }
+                                }
+                            )
+                        }
+
+
+
 
 
                         // Map Screen
